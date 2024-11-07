@@ -1,0 +1,165 @@
+.toast {
+  display: flex;
+  align-items: center;
+  padding: 20px 0;
+  background-color: #fff;
+  border-radius: 4px;
+  border-left: 4px solid;
+  box-shadow: 0 5px 8px rgba(0, 0, 0, 0.08);
+  min-width: 400px;
+  max-width: 450px;
+  transition: all linear 0.3s;
+}
+
+#toast {
+  position: fixed;
+  top: 32px;
+  right: 32px;
+  z-index: 1000;
+}
+
+@keyframes SlideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(calc(100% + 32px));
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes FadeOut {
+  to {
+    opacity: 0;
+  }
+}
+
+.toast + .toast {
+  margin-top: 24px;
+}
+
+.toast__icon {
+  font-size: 24px;
+}
+
+.toast__close {
+  font-size: 20px;
+  color: rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+}
+
+.toast__close,
+.toast__icon {
+  padding: 0 16px;
+}
+
+.toast__body {
+  flex-grow: 1;
+}
+
+.toast__title {
+  font-weight: 600;
+  font-size: 16px;
+  color: #333;
+}
+
+.toast__mess {
+  font-size: 14px;
+  color: #888;
+  margin-top: 6px;
+  line-height: 1.5;
+}
+
+.toast--success {
+  border-color: #47d864;
+}
+
+.toast--success .toast__icon {
+  color: #47d864;
+}
+
+.toast--info {
+  border-color: #2f86eb;
+}
+
+.toast--info .toast__icon {
+  color: #2f86eb;
+}
+
+.toast--warning {
+  border-color: #ffc021;
+}
+
+.toast--warning .toast__icon {
+  color: #ffc021;
+}
+
+.toast--error {
+  border-color: #ff623d;
+}
+
+.toast--error .toast__icon {
+  color: #ff623d;
+}
+
+/* Custom styles */
+body {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f5f5f5;
+}
+.container {
+  padding: 0;
+  max-width: 1000px;
+  display: flex;
+  height: 90vh;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.left-section {
+  background: url(./assets/background.jpeg) no-repeat center center;
+  background-size: cover;
+}
+.right-section {
+  padding: 40px;
+  background-color: #fff;
+  justify-content: center;
+}
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+.logo img {
+  width: 150px;
+  height: auto;
+}
+.form-group {
+  margin-bottom: 20px;
+}
+.btn_login {
+  width: 100%;
+  background-color: #ff5722;
+  border: none;
+  color: #fff;
+}
+.form-control {
+  background-color: #f4f4ff;
+}
+.btn_res {
+  width: 100%;
+  background-color: #fff;
+  border: 1px solid #6251dd;
+  color: #fff;
+}
+
+@media only screen and (max-width: 380px) {
+  .container {
+    height: 100vh;
+  }
+}
