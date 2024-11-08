@@ -16,6 +16,7 @@
       integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
       crossorigin="anonymous"
     ></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
 </head>
 <body>
     <div class="container my-5">
@@ -147,6 +148,8 @@
                 <button class="btn btn-primary w-100 mt-3">Xác Nhận Thanh Toán</button>
             </div>
         </div>
+
+        <a class= "text-black " href="cart.html"><i class="bi bi-arrow-left"></i> Quay lại giỏ hàng</a>
     </div>
 
 </body>
