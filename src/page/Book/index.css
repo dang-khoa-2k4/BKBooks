@@ -1,0 +1,12 @@
+
+.table-border{
+    border: 1px solid #DFE0EB;
+}
+
+.table-book th{
+    color: #A4A6B3;
+}
+
+.table-book tr i ,.fa-caret-down{
+    color: #A4A6B3;
+}
