@@ -23,24 +23,7 @@ class HomeController extends BaseController{
     }
 
     public function index(){
-
-        $admininfo = $this->adminModel-> getById();
-        $usercount = $this -> userModel->count();
-        $productcount = $this -> productModel->count();
-        $cartcount=  $this -> cartModel ->count();
-        $cartlist  = $this -> cartModel -> getRecentCart();
-        //TODO
-        //add username to this list 
-        $userlist = $this -> userModel -> getRecentUser();
-
-        return $this -> view('admin.pages.home',[
-            'admininfo' => $admininfo,
-            'usercount' => $usercount,
-            'productcount' => $productcount,
-            'cartcount' => $cartcount,
-            'cartlist' => $cartlist,
-            'userlist' => $userlist
-        ]);
+        # TODO: 
     }
     
     public function logout(){
