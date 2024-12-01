@@ -11,7 +11,7 @@ class BookController
     }
 
     // API: Get all books
-    public function getAllBooks()
+    public function getAllBook()
     {
         $books = $this->bookModel->getAllBooks();
         echo json_encode($books);
