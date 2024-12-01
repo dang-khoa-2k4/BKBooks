@@ -1,11 +1,10 @@
 <?php
-class App
+class Router
 {
     private $controller;
     private $action;
     private $params;
     private $role;
-    private $router;
 
     public function __construct()
     {
@@ -19,11 +18,10 @@ class App
     /**
      * Main function to handle the URL and set the controller, action, and parameters.
      */
-    public function handleURL()
+    public function handleURL($URI)
     {
-        $url = $this->getURL();
+        $url = $this->getURL($URI);
         
-
         $this->setControllerFromURL($url);
         $this->setActionFromURL($url);
         $this->setParamsFromURL($url);
@@ -39,9 +37,9 @@ class App
     /**
      * Get the URL from the request
      */
-    public function getURL()
+    public function getURL($URI)
     {
-        $url = $_SERVER['REQUEST_URI'];
+        $url = $URI;
         $url = explode('?', $url)[0]; // Remove query string
         $url = rtrim($url, '/'); // Remove trailing slash
         $url = explode('/', $url); // Split by slashes
@@ -79,12 +77,13 @@ class App
         $controllerFile = 'App/Controller/' . $this->role . '/' . $controllerName . '.php';
         if ($this->role == 'guest') {
             if ($this->controller == 'Home') {
-                $controllerFile = 'App/Controller/HomeController.php';
+                // $controllerFile = 'App/Controller/HomeController.php';
             } else {
                 header('Location: /login');
                 exit();
             }
         }
+        
         if (file_exists($controllerFile)) {
             require_once($controllerFile);
             if (!class_exists($controllerName)) {

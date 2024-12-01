@@ -1,6 +1,7 @@
 <?php
 	session_start();
-	$app = new App();
-	$this->handleURL();
+	$router = new router();
+	$URI = $_SERVER['REQUEST_URI'];
+	$router->handleURL($URI);
 ?>
 
