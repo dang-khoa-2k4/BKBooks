@@ -3,7 +3,6 @@ include_once('Database.php');
 class BaseModel extends DataBase{
     protected $conn;
     
-
     function __construct() {
         $this -> conn = $this -> connect();
     }

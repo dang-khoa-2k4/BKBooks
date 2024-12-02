@@ -17,7 +17,7 @@ class BaseController{
     }
 
     protected function loadModel($model){
-        $modelPath = self::MODEL_FOLDER_NAME . '/' . $model . '.php';
+        $modelPath = self::MODEL_FOLDER_NAME .'/user'. '/' . $model . '.php';
         return require_once($modelPath);
     }
 }
