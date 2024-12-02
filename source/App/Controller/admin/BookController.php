@@ -1,30 +1,25 @@
 <?php
 
-class BookController
+class BookController extends BaseController
 {
-    private $bookModel;
-
     public function __construct()
     {
-        $this->loadModel('BookModel');  // Load the BookModel
-        $this->bookModel = new BookModel();  // Initialize the model
+        parent::__construct('Book');
     }
 
     // API: Get all books
     public function getAllBook()
     {
-        $books = $this->bookModel->getAllBooks();
-        echo json_encode($books);
+        if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+            parent::__callModel('getAll', []);
+        }
     }
 
     // API: Get a single book by its ID
     public function getBook($id)
     {
-        $book = $this->bookModel->getBookById($id);
-        if ($book) {
-            echo json_encode($book);
-        } else {
-            echo json_encode(['error' => 'Book not found']);
+        if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+            parent::__callModel('getByID', $id);
         }
     }
 
@@ -35,13 +30,8 @@ class BookController
             $data = json_decode(file_get_contents('php://input'), true);
 
             if (isset($data['name'], $data['author'], $data['price'])) {
-                $name = $data['name'];
-                $author = $data['author'];
-                $price = $data['price'];
 
-                $book = $this->bookModel->addBook($name, $author, $price);
-
-                echo json_encode($book);
+                parent::__callModel('add', $data);
             } else {
                 echo json_encode(['error' => 'Missing data']);
             }
@@ -49,29 +39,43 @@ class BookController
     }
 
     // API: Edit an existing book
-    public function editBook($id)
+    public function updateBook($id)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
             $data = json_decode(file_get_contents('php://input'), true);
 
-            if (isset($data['name'], $data['author'], $data['price'])) {
-                $name = $data['name'];
-                $author = $data['author'];
-                $price = $data['price'];
+            $updateData = array();
 
-                $updatedBook = $this->bookModel->updateBook($id, $name, $author, $price);
+            // Danh sách các trường cần kiểm tra
+            $fields = array(
+                'Name',
+                'Publisher',
+                'Author',
+                'Price',
+                'Description',
+                'Genre',
+                'Image'
+            );
 
-                echo json_encode($updatedBook);
-            } else {
-                echo json_encode(['error' => 'Missing data']);
+            foreach ($fields as $field) {
+                if (isset($data[$field]) && $data[$field] !== '') {
+                    $updateData[$field] = $data[$field];
+                }
             }
+
+            if (!empty($updateData))
+                parent::__callModel('update', [$updateData, ['id' => $id]]);
+
+        } else {
+            echo json_encode(['error' => 'Missing data']);
         }
     }
 
-    private function loadModel($model)
+    // API: Delete a book by its ID
+    public function deleteBook($id)
     {
-        require_once 'Model/' . $model . '.php';
+        if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
+            parent::__callModel('delete', ['id' => $id]);
+        }
     }
 }
-
-?>

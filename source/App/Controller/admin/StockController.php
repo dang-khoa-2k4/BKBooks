@@ -1,76 +1,83 @@
 <?php
 
-require_once('Controller/BaseController.php');
-
-class ProductController extends BaseController{
-    private $productModel;
-
-    function __construct() {
-        $this -> loadModel('ProductModel');
-        $this->productModel = new ProductModel();
+class StockController extends BaseController
+{
+    public function __construct()
+    {
+        // Gọi constructor của BaseController và load model 'StockModel'
+        parent::__construct('Stock');
     }
 
-    public function index(){
-        $data = $this -> productModel->getAll();
-        return $this -> view('admin.pages.product',[
-            'data' => $data
-        ]);
-    }
+    // Add a new stock entry
+    public function addStock()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data = json_decode(file_get_contents('php://input'), true);
 
-    public function deleteProduct(){
-        if(isset($_POST['productId'])) {
-            $productId = $_POST['productId'];
-            $data = $this->productModel->deleteProduct($productId);
-            header("Location: index.php?controller=product&action=index");
-            exit();
+            if (isset($data['book_id'], $data['quantity_in_stock'])) {
+                // Gọi phương thức add trong model
+                parent::__callModel('add', $data);
+            } else {
+                echo json_encode(['error' => 'Missing data']);
+            }
         }
     }
 
-    // public function editProduct(){
-    //     if(isset($_POST['productId'])) {
-    //         $productId = $_POST['productId'];
-    //         $product = $this->productModel->findById($productId);
-    //         include 'index.php?View=productEdit.php';
-    //     }
-    // }
+    // Edit an existing stock entry
+    public function updateStock($id)
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
+            $data = json_decode(file_get_contents('php://input'), true);
 
-    public function updateProduct(){
-        if(isset($_POST['productId'])) {
-            $productId = $_POST['productId'];
-            $productName = $_POST['productName'];
-            $productType = $_POST['productType'];
-            $productPrice = $_POST['productPrice'];
-            $productDescription = $_POST['productDescription'];
-            $productImageURL = $_POST['productImageURL'];
-    
-            $data = $this->productModel->updateProduct($productId, $productName, $productType, $productPrice, $productDescription, $productImageURL);
-    
-            header("Location: index.php?controller=product&action=index");
-            exit();
-        }
-        else{
-            die($_POST['productId']);
+            $updateData = array();
+
+            // Danh sách các trường cần kiểm tra
+            $fields = array(
+                'Id',
+                'Quantity'
+            );
+
+            foreach ($fields as $field) {
+                if (isset($data[$field]) && $data[$field] !== '') {
+                    $updateData[$field] = $data[$field];
+                }
+            }
+
+            if (!empty($updateData)) {
+                // Gọi phương thức update trong model
+                parent::__callModel('update', [$updateData, ['id' => $id]]);
+            } else {
+                echo json_encode(['error' => 'Missing data']);
+            }
         }
     }
 
-    public function addProduct(){
-        if(isset($_POST['productName'])) {
-            //$productId = $_POST['productId'];
-            $productName = $_POST['productName'];
-            $productType = $_POST['productType'];
-            $productPrice = $_POST['productPrice'];
-            $productDescription = $_POST['productDescription'];
-            $productImageURL = $_POST['productImageURL'];
-    
-            $data = $this->productModel->addProduct($productName, $productType, $productPrice, $productDescription, $productImageURL);
-    
-            header("Location: index.php?controller=product&action=index");
-            exit();
-        }
-        else{
-            die($_POST['productName']);
+    // Get a single stock entry by ID
+    public function getStock($id)
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+            // Gọi phương thức getByID trong model
+            parent::__callModel('getByID', $id);
         }
     }
 
+    // Get all stock entries
+    public function getAllStock()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+            // Gọi phương thức getAll trong model
+            parent::__callModel('getAll', []);
+        }
+    }
+
+    // Delete a stock entry by ID
+    public function deleteStock($id)
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
+            // Gọi phương thức delete trong model
+            parent::__callModel('delete', $id);
+        }
+    }
 }
+
 ?>

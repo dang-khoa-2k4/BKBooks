@@ -1,13 +1,11 @@
 <?php
 
-class CustomerController
+class CustomerController extends BaseController
 {
-    private $customerModel;
-
     public function __construct()
     {
-        $this->loadModel('CustomerModel');  // Load the CustomerModel
-        $this->customerModel = new CustomerModel();  // Initialize the model
+        // Gọi constructor của BaseController và load model 'CustomerModel'
+        parent::__construct('Customer');
     }
 
     // Add a new customer
@@ -16,15 +14,8 @@ class CustomerController
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = json_decode(file_get_contents('php://input'), true);
 
-            if (isset($data['name'], $data['email'], $data['phone'], $data['address'])) {
-                $name = $data['name'];
-                $email = $data['email'];
-                $phone = $data['phone'];
-                $address = $data['address'];
-
-                $newCustomer = $this->customerModel->addCustomer($name, $email, $phone, $address);
-
-                echo json_encode($newCustomer);
+            if (isset($data['name'], $data['email'], $data['phone'])) {
+                parent::__callModel('add', $data);
             } else {
                 echo json_encode(['error' => 'Missing data']);
             }
@@ -32,63 +23,60 @@ class CustomerController
     }
 
     // Edit an existing customer
-    public function editCustomer($id)
+    public function updateCustomer($id)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
             $data = json_decode(file_get_contents('php://input'), true);
 
-            if (isset($data['name'], $data['email'], $data['phone'], $data['address'])) {
-                $name = $data['name'];
-                $email = $data['email'];
-                $phone = $data['phone'];
-                $address = $data['address'];
+            $updateData = array();
+    
+                // Danh sách các trường cần kiểm tra
+                $fields = array(
+                    'Name',
+                    'UserName',
+                    'Password',
+                    'Email',
+                    'Phone',
+                );
+    
+                foreach ($fields as $field) {
+                    if (isset($data[$field]) && $data[$field] !== '') {
+                        $updateData[$field] = $data[$field];
+                    }
+                }
 
-                $updatedCustomer = $this->customerModel->editCustomer($id, $name, $email, $phone, $address);
-
-                echo json_encode($updatedCustomer);
+                if (!empty($updateData)) 
+                    parent::__callModel('update', [$updateData, ['id' => $id]]);
             } else {
                 echo json_encode(['error' => 'Missing data']);
-            }
         }
-    }
+}
+
 
     // Get a single customer by ID
     public function getCustomer($id)
     {
-        $customer = $this->customerModel->getCustomerById($id);
-        if ($customer) {
-            echo json_encode($customer);
-        } else {
-            echo json_encode(['error' => 'Customer not found']);
+        if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+            parent::__callModel('getByID', $id);
+        }
+    }
+
+    // Get all customers
+    public function getAllCustomers()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+            parent::__callModel('getAll', []);
         }
     }
 
     // Delete a customer by ID
     public function deleteCustomer($id)
     {
-        $deleted = $this->customerModel->deleteCustomer($id);
-        if ($deleted) {
-            echo json_encode(['message' => 'Customer deleted successfully']);
-        } else {
-            echo json_encode(['error' => 'Failed to delete customer']);
+        if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
+            parent::__callModel('delete', $id);
         }
     }
 
-    // Ban a customer
-    public function banCustomer($id)
-    {
-        $bannedCustomer = $this->customerModel->banCustomer($id);
-        if ($bannedCustomer) {
-            echo json_encode(['message' => 'Customer banned successfully', 'customer' => $bannedCustomer]);
-        } else {
-            echo json_encode(['error' => 'Failed to ban customer']);
-        }
-    }
-
-    private function loadModel($model)
-    {
-        require_once 'Model/' . $model . '.php';
-    }
 }
 
 ?>
