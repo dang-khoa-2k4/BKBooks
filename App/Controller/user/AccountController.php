@@ -1,12 +1,17 @@
 <?php 
 require_once('../BaseController.php');
+require_once('./InforController.php');
+
 
 class AccountController extends BaseController {
     private $AccountModel;
+    private $InforController;
 
     function __construct() {
         $this->loadModel('AccountModel');
         $this->AccountModel = new AccountModel();
+        $this->InforController= new InforController();
+
     }
 
     // Đăng ký người dùng mới
@@ -16,15 +21,23 @@ class AccountController extends BaseController {
             $jsonData = file_get_contents('php://input'); // Lấy nội dung body của request
             $data = json_decode($jsonData, true); // Giải mã JSON thành mảng
 
-            // Kiểm tra nếu dữ liệu có tồn tại
+            // Kiểm tra nếu dữ liệu ó tồcn tại
             if (isset($data['username'], $data['password'], $data['email'])) {
                 $username = htmlspecialchars(trim($data['username']));
                 $password = htmlspecialchars(trim($data['password']));
-                $email = htmlspecialchars(trim($data['email']));
+                $email = htmlspecialchars(trim(string: $data['email']));
+
+                
+                $response_login =$this->AccountModel->login($username, $password);
+                $response_login_data= json_decode($response_login);
+                // login to get ID
+                $user_id= $response_login_data['ID'];
+                $this->InforController->addInfor($user_id);
+                //add the infor empty 
 
                 // Gọi phương thức register từ model
                 $response = $this->AccountModel->register($username, $password, $email);
-
+                
                 // Gửi phản hồi JSON về client
                 echo $response;
                 exit();
@@ -56,8 +69,11 @@ class AccountController extends BaseController {
                     $_SESSION['username'] = $data['username'];
                     $_SESSION['role'] = $data['role'];
                     $_SESSION['login'] = true;
-
+                    $_SESSION['ID'] = $data['ID'];
+                    // store the session to call when access
+                    
                     // Gửi phản hồi JSON về client
+
                     echo $response;
                 } else {
                     echo $response;
@@ -103,7 +119,7 @@ class AccountController extends BaseController {
                     echo json_encode(['success' => '0', 'message' => 'You need to be logged in to update your password.']);
                     exit();
                 }
-                
+
                 $password_old = htmlspecialchars(trim($data['password_old']));
                 $password_new = htmlspecialchars(trim($data['password_new']));
 
@@ -111,7 +127,9 @@ class AccountController extends BaseController {
                 $response = $this->AccountModel->updatePassword($username, $password_old, $password_new);
 
                 echo $response;
+                // model had do the response
                 exit();
+            } 
         }
     }
 }

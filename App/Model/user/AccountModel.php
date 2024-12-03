@@ -18,7 +18,8 @@ class AccountModel extends BaseModel{
             'username' => $username,
             'password' => $hashedPassword,
             'email'    => $email,
-            'role'     => 'user'
+            'role'     => 'user',
+        
         ];
         if($this->create('user', $data)){
             return json_encode(['success' => '1', 'message' => 'Registration successful.']);
@@ -35,6 +36,7 @@ class AccountModel extends BaseModel{
             // Trả về thông tin người dùng dưới dạng JSON
             return json_encode([
                 'success' => '1',
+                'ID'       => $user['ID'],
                 'username' => $user['username'],
                 'role' => $user['role'], // Giả sử role có trong bảng users
                 'message' => 'Login successful.'
