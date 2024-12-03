@@ -1,10 +1,10 @@
 <?php 
 require_once('../BaseModel.php');
 
-
-Class BookModel extends BaseModel{
-     // Lấy tất cả sách với phân trang và tìm kiếm
-     public function getAll($limit = 10, $offset = 0, $orderBy = ['ID DESC'], $select = ['*']) {
+Class BookModel extends BaseModel {
+    
+    // Lấy tất cả sách với phân trang và tìm kiếm
+    public function getAll($limit = 10, $offset = 0, $orderBy = ['ID DESC'], $select = ['*']) {
         return $this->all('books', $select, $orderBy, $limit, $offset); // Sử dụng hàm all của BaseModel
     }
 
@@ -13,8 +13,14 @@ Class BookModel extends BaseModel{
         return $this->find('books', 'ID', $id); // Sử dụng hàm find của BaseModel
     }
 
-    public function getByAuthor($author){
-        
+    // Lấy các sách theo tác giả
+    public function getByAuthor($author, $limit = 10, $offset = 0, $orderBy = ['ID DESC'], $select = ['*']) {
+        return $this->all('books', $select, $orderBy, $limit, $offset, "author = '{$author}'");
+    }
+
+    // Lấy các sách theo thể loại
+    public function getByGenre($genre, $limit = 10, $offset = 0, $orderBy = ['ID DESC'], $select = ['*']) {
+        return $this->all('books', $select, $orderBy, $limit, $offset, "genre = '{$genre}'");
     }
 }
 ?>

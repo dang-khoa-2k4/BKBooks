@@ -8,39 +8,40 @@ class BaseModel extends DataBase{
     }
 
 
-    public function all($table ,
-                        $select = ['*'],
-                        $orderBy = [],
-                        $limit = 100
-                        )
-    {
+    public function all($table, $select = ['*'], $orderBy = [], $limit = 100, $offset = 0, $where = '') {
         $column = implode(',', $select);
         $orderByStr = implode(',', $orderBy);
-
-        if ($orderByStr){
-            $sql = "SELECT {$column} FROM {$table} ORDER BY {$orderByStr} LIMIT {$limit}";
+    
+        // Nếu có điều kiện WHERE, thêm vào câu truy vấn
+        $sql = "SELECT {$column} FROM {$table}";
+        if ($where) {
+            $sql .= " WHERE {$where}";
         }
-        else
-        {
-            $sql = "SELECT {$column} FROM {$table} LIMIT {$limit}";
+    
+        // Thêm ORDER BY nếu có
+        if ($orderByStr) {
+            $sql .= " ORDER BY {$orderByStr}";
         }
-        
-        $result = $this -> _query($sql);
-        
+    
+        // Thêm LIMIT và OFFSET
+        $sql .= " LIMIT {$limit} OFFSET {$offset}";
+    
+        $result = $this->_query($sql);
+    
         $data = [];
         while ($row = mysqli_fetch_assoc($result)){
             array_push($data, $row);
         }
         return $data;
     }
-
+    
     public function find($table, $idName, $idValue){
         $sql = "SELECT * FROM {$table} WHERE {$idName} = '{$idValue}'";
         $result = $this -> _query($sql);
         return mysqli_fetch_assoc($result);
     }
     
-    public function create($table, $data = []){
+    public function create($table, $data = []): bool|mysqli_result{
         $key = implode(',',array_keys($data));
         $newValueArray = array_map(function($value){
             return "'" . $value . "'";
@@ -74,5 +75,7 @@ class BaseModel extends DataBase{
     function __destruct() {
         $this -> closeDatabase($this->conn);
     }
+
+
 }
 ?>
