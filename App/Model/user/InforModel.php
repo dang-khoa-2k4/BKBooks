@@ -1,5 +1,5 @@
 <?php
-require_once("../BaseModel.php") // Bao gồm lớp kết nối cơ sở dữ liệu
+require_once("../BaseModel.php") ;// Bao gồm lớp kết nối cơ sở dữ liệu
 
 class InforModel extends BaseModel {
 

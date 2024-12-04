@@ -22,5 +22,21 @@ Class BookModel extends BaseModel {
     public function getByGenre($genre, $limit = 10, $offset = 0, $orderBy = ['ID DESC'], $select = ['*']) {
         return $this->all('books', $select, $orderBy, $limit, $offset, "genre = '{$genre}'");
     }
+    // use to getbook have desc orderID 
+    public function getBooksByOrderId($orderID, $limit = 10, $offset = 0, $orderBy = ['bookID DESC'], $select = ['*']) {
+        return $this->all('order_book', $select, $orderBy, $limit, $offset, "orderID = '{$orderID}'");
+    }
+
+
+
+    // use to add book into Order_book table
+    public function addBookToOrder($orderID, $bookID) {
+        $data = [
+            'orderID' => $orderID,
+            'bookID' => $bookID
+        ];
+
+        return $this->create('order_book', $data); // Sử dụng hàm create của BaseModel
+    }
 }
 ?>

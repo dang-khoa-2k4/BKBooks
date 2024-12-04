@@ -41,7 +41,7 @@ class BookController extends BaseController {
     }
 
     // Lấy thông tin sách theo ID
-    public function getID() {
+    public function get_book_ID() {
         if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             // Lấy ID từ query string (URL)
             if (isset($_GET['id'])) {

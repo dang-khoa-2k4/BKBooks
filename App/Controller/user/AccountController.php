@@ -7,10 +7,13 @@ class AccountController extends BaseController {
     private $AccountModel;
     private $InforController;
 
+    private $CommentController;
+
     function __construct() {
         $this->loadModel('AccountModel');
         $this->AccountModel = new AccountModel();
         $this->InforController= new InforController();
+        $this->CommentController= new CommentController();
 
     }
 
@@ -130,6 +133,53 @@ class AccountController extends BaseController {
                 // model had do the response
                 exit();
             } 
+        }
+    }
+
+    public function Post_Comment(){
+        // receive boook ID and content 
+        session_start();
+
+        if (!isset($_SESSION['login']) || $_SESSION['login'] !== true) {
+            echo json_encode(['success' => '0', 'message' => 'You need to be logged in to update your password.']);
+            exit();
+        }
+        
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            // Lấy dữ liệu JSON từ yêu cầu HTTP
+            $jsonData = file_get_contents('php://input');
+            $data = json_decode($jsonData, true);
+            
+            $user_id = $_SESSION['id'];
+            $book_id = $data['book_id'];
+            $content = $data['content'];
+            
+            $response= $this->CommentController->AddCommentController($user_id, $book_id, $content);
+            echo $response;
+
+        }
+
+    }
+    public function Delete_Comment(){
+        session_start();
+
+        if (!isset($_SESSION['login']) || $_SESSION['login'] !== true) {
+            echo json_encode(['success' => '0', 'message' => 'You need to be logged in to update your password.']);
+            exit();
+        }
+        
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            // Lấy dữ liệu JSON từ yêu cầu HTTP
+            $jsonData = file_get_contents('php://input');
+            $data = json_decode($jsonData, true);
+            
+            $user_id = $_SESSION['id'];
+            $book_id = $data['book_id'];
+            $content = $data['content'];
+            
+            $response= $this->CommentController->Delete_Comment_by_User_Controller($user_id, $book_id, $content);
+            echo $response;
+
         }
     }
 }
