@@ -17,6 +17,8 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8mb4 */;
 
+
+
 --
 -- Database: `test`
 --
@@ -28,7 +30,7 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `book` (
-  `id` varchar(10) NOT NULL,
+  `id` int NOT NULL,
   `quantity` int(11) NOT NULL,
   `genre` varchar(19) DEFAULT NULL,
   `name` varchar(147) NOT NULL,
@@ -78,8 +80,8 @@ INSERT INTO `book` (`id`, `quantity`, `genre`, `name`, `author`, `publisher`, `p
 --
 
 CREATE TABLE `comment` (
-  `BookID` varchar(10) NOT NULL,
-  `MemberID` varchar(10) NOT NULL,
+  `BookID` int NOT NULL,
+  `MemberID` int NOT NULL,
   `Time` date NOT NULL,
   `Content` varchar(2000) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
@@ -91,8 +93,8 @@ CREATE TABLE `comment` (
 --
 
 CREATE TABLE `contain` (
-  `BookID` varchar(10) NOT NULL,
-  `OrderID` varchar(10) NOT NULL
+  `BookID` int NOT NULL,
+  `OrderID` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
@@ -102,11 +104,11 @@ CREATE TABLE `contain` (
 --
 
 CREATE TABLE `member` (
-  `ID` varchar(10) NOT NULL,
+  `ID` int NOT NULL,
   `FirstName` varchar(30) DEFAULT NULL,
   `LastName` varchar(30) DEFAULT NULL,
   `DOB` date DEFAULT NULL,
-  `Address` varchar(255) DEFAULT NULL,
+  `Phone` varchar(11) DEFAULT NULL,
   `Email` varchar(255) DEFAULT NULL,
   `Status` varchar(30) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
@@ -118,8 +120,8 @@ CREATE TABLE `member` (
 --
 
 CREATE TABLE `modify` (
-  `UserID` varchar(10) NOT NULL,
-  `MemberID` varchar(10) NOT NULL,
+  `UserID` int NOT NULL,
+  `MemberID` int NOT NULL,
   `Time` date NOT NULL,
   `Action` varchar(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
@@ -131,8 +133,8 @@ CREATE TABLE `modify` (
 --
 
 CREATE TABLE `order` (
-  `ID` varchar(30) NOT NULL,
-  `MemberID` varchar(10) NOT NULL,
+  `ID` int NOT NULL,
+  `MemberID` int NOT NULL,
   `Status` varchar(30) NOT NULL,
   `DeliveryAddress` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
@@ -144,7 +146,7 @@ CREATE TABLE `order` (
 --
 
 CREATE TABLE `user` (
-  `ID` varchar(10) NOT NULL,
+  `ID` int NOT NULL,
   `Username` varchar(30) NOT NULL,
   `Password` varchar(255) NOT NULL,
   `Role` varchar(10) NOT NULL

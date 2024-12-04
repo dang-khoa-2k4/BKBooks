@@ -16,12 +16,20 @@ class BookModel extends BaseModel{
         // parent::__construct();
     }
 
-    public function getAllBooks(){
-        return $this->getAll();
+    public function getAllBooks($page, $perPage){
+        return $this->getAll($perPage, ($page - 1) * $perPage);
     }
 
     public function getBookById($id){
         return $this->getBy('id', $id);
+    }
+
+    public function getBookByGenre($genre, $page, $perPage){
+        return $this->getBy('genre', $genre, $perPage, ($page - 1)* $perPage);
+    }
+
+    public function getBookByAuthor($author, $page, $perPage){
+        return $this->getBy('author', $author, $perPage, ($page - 1)* $perPage);
     }
     
     public function addBook($data){

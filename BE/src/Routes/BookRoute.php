@@ -5,17 +5,38 @@ require_once '../src/middleware/AuthMiddleware.php';
 $bookController = new BookController();
 
 // Kiểm tra người dùng đã đăng nhập chưa
-AuthMiddleware::checkLogin();
+// AuthMiddleware::checkLogin();
 
 // Route cho khách hàng (xem sách)
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && $_GET['action'] === 'getAllBooks') {
-    $bookController->getBooks();
+    if(!isset($_GET['page']) || !isset($_GET['perPage'])) {
+        $bookController->getBooks(1, 10);
+    } else {
+        $bookController->getBooks($_GET['page'], $_GET['perPage']);
+    }
 }
 
 //Route xem sách theo id
 if($_SERVER['REQUEST_METHOD'] === 'GET' && $_GET['action'] === 'getBookById') {
     $bookController->getBookById($_GET['id']);
 }
+
+if($_SERVER['REQUEST_METHOD'] === 'GET' && $_GET['action'] === 'getBookByGenre') {
+    if(!isset($_GET['page']) || !isset($_GET['perPage'])) {
+        $bookController->getBookByGenre($_GET['genre'], 1, 10);
+    } else {
+        $bookController->getBookByGenre($_GET['genre'], $_GET['page'], $_GET['perPage']);
+    }
+}
+
+if($_SERVER['REQUEST_METHOD'] === 'GET' && $_GET['action'] === 'getBookByAuthor') {
+    if(!isset($_GET['page']) || !isset($_GET['perPage'])) {
+        $bookController->getBookByAuthor($_GET['author'], 1, 10);
+    } else {
+        $bookController->getBookByAuthor($_GET['author'], $_GET['page'], $_GET['perPage']);
+    }
+}
+
 
 //Route thêm sách
 if($_SERVER['REQUEST_METHOD'] === 'POST' && $_GET['action'] === 'addBook') {

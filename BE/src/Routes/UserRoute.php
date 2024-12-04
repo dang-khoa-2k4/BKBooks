@@ -14,4 +14,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_GET['action'] === 'logout') {
     AuthMiddleware::checkLogin();
     $userController->logout();
 }
+
+if($_SERVER['REQUEST_METHOD'] === 'POST' && $_GET['action'] === 'register') { 
+    $userController->register($_POST['username'], $_POST['password']);
+}
 ?>

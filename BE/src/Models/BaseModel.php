@@ -31,19 +31,29 @@ abstract class BaseModel{
      * Abstract method to get all data from the table
      */
 
-    public function getAll(){
-        $stmt = self::$pdo->prepare("SELECT * FROM $this->table");
+    public function getAll($lim, $offs){
+        $stmt = self::$pdo->prepare("SELECT * FROM $this->table LIMIT $lim OFFSET $offs");
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $stmt1 = self::$pdo->prepare("SELECT COUNT(*) FROM $this->table");
+        $stmt1->execute();
+        $count = $stmt1->fetchColumn();
+
+        return [$stmt->fetchAll(PDO::FETCH_ASSOC), $count];
     }
 
     /**
      * Abstract method to get data by value in the column
      */
-    public function getBy($column, $value){
-        $stmt = self::$pdo->prepare("SELECT * FROM $this->table WHERE $column = :value");
+    public function getBy($column, $value, $lim = null, $offs = null){
+        $stmt = self::$pdo->prepare("SELECT * FROM $this->table WHERE $column = :value LIMIT $lim OFFSET $offs");
         $stmt->execute(['value' => $value]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $stmt1 = self::$pdo->prepare("SELECT COUNT(*) FROM $this->table WHERE $column = :value");
+        $stmt1->execute(['value' => $value]);
+        $count = $stmt1->fetchColumn();
+
+        return [$stmt->fetchAll(PDO::FETCH_ASSOC), $count];
     }
 
     /**

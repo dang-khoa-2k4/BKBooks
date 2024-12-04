@@ -2,12 +2,15 @@
 require_once '../src/Models/UserModel.php';
 
 class UserController {
+    public function __construct() {
+        $this->userModel = new UserModel();
+    }
     // Đăng nhập
     public function login() {
         $data = json_decode(file_get_contents("php://input"));
         
         if (isset($data->username) && isset($data->password)) {
-            $user = User::login($data->username, $data->password);
+            $user = UserModel::login($data->username, $data->password);
             if ($user) {
                 // Nếu đăng nhập thành công, lưu thông tin vào session
                 session_start();
@@ -50,6 +53,23 @@ class UserController {
             echo json_encode(['message' => 'User is logged in', 'user' => $_SESSION['username']]);
         } else {
             echo json_encode(['message' => 'User is not logged in']);
+        }
+    }
+
+    public function register($username, $password) {
+        
+        if ($username && $password) {
+            $result = UserModel::register([
+                'username' => $username,
+                'password' => $password
+            ]);
+            if ($result) {
+                echo json_encode(['message' => 'Register successful']);
+            } else {
+                echo json_encode(['message' => 'Username already exists']);
+            }
+        } else {
+            echo json_encode(['message' => 'Please provide username and password']);
         }
     }
 }
