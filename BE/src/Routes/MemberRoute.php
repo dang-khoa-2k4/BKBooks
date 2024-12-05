@@ -26,4 +26,9 @@ else if($_SERVER['REQUEST_METHOD']==='POST'&&$_GET['action']==='changePassword')
 else if($_SERVER['REQUEST_METHOD']==='GET'&& $_GET['action'] === 'infor'){
     $memberController->getInfo($_GET['id']);
 }
+else if($_SERVER['REQUEST_METHOD']==='POST'&&$_GET['action'] === 'updateInfo'){
+    $memberController->updateInfo( [
+        "firstname" => $_POST['firstname'],
+    ], $_POST['id']);
+}
 ?>

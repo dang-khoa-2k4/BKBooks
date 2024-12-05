@@ -103,4 +103,43 @@ class MemberModel extends UserModel{
         return [false, $msg, []];
     }
     }
+
+    /**
+     * Summary of updateInfor
+     * @param mixed $id: id of member
+     * @param mixed $data: data to update
+     * @return [$result, $msg]
+     * $data = ["firstname"=> $firstname, "lastname"=> $lastname, "DOB"=> $DOB, "phone"=> $phone, "email"=> $email]
+     * 
+     *
+     */
+    public function updateInfor($data,$id){
+        try{
+            // Fields to be added.
+            $fields = array_keys($data);
+            // Fields values
+            $values = array_values($data);
+
+            $stmt = self::$pdo->prepare("
+            UPDATE member SET ".  implode(', ', array_map(function($field){ return $field . ' = ? '; }, $fields)) ."
+            WHERE id = ?");
+            array_push($values, $id);
+            $result = $stmt->execute($values);
+
+            if(!$result){
+                $msg = 'Update infor failed';
+                return [false, $msg];
+            }
+            else{
+                $msg = 'Update infor successfully';
+                return [true, $msg];
+            }
+        }
+        catch(PDOException $e){
+            echo $e->getMessage();
+            $msg = 'Update infor failed';
+            return [false, $msg];
+        }
+    }
+
 }

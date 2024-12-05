@@ -83,4 +83,17 @@ class MemberController{
             echo json_encode($response);
         }
     }
+
+    public function updateInfo($data, $id){
+
+        [$result, $msg] = $this->memberModel->updateInfor($data, $id);
+        header("Content-Type: application/json");
+        if ($result) {
+            echo json_encode(["message"=> $msg]);
+        }
+        else {
+            echo json_encode(["message"=> $msg]);
+        }
+
+}
 }

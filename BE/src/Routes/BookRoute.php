@@ -88,9 +88,5 @@ if($_SERVER['REQUEST_METHOD'] === 'GET' && $_GET['action'] === 'deleteBook') {
     $bookController->deleteBook($_GET['id']);
 }
 
-// Route yêu cầu người dùng phải có quyền admin để tạo sách
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_GET['action'] === 'createBook') {
-    AuthMiddleware::checkRole('admin');
-    $bookController->createBook();
-}
+
 ?>
