@@ -30,7 +30,7 @@ class BaseController
         $response = call_user_func_array([$callModel, $callMethod], $params);
         if ($method === 'add' || $method === 'update' || $method === 'delete') {
             if ($response) {
-                echo json_encode(['success' => 'Record' . $callMethod . 'successfully']);
+                echo json_encode(value: ['success' => 'Record' . $callMethod . 'successfully']);
             } else {
                 echo json_encode(['error' => 'Cannot' . $callMethod . 'record']);
             }

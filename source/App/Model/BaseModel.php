@@ -1,79 +1,139 @@
 <?php
-include_once('Model/Database.php');
-class BaseModel extends DataBase{
-    protected $conn;
-    
+abstract class BaseModel{
+    /*
+    * @var PDO
+    */
+    static $pdo = null;
 
-    function __construct() {
-        $this -> conn = $this -> connect();
+    /**
+     * The name of the talbe in the databse that the model binds
+     * @var string
+    */
+    public $table;
+
+    /**
+     * The name of schema in the database that the model binds
+     * @var string
+     */
+    public $rows;
+
+    /**
+     * The model construct
+     */
+    public function __construct(){
+        // if($this->pdo == null){
+        //     require_once '../src/config.php';
+        //     $this->pdo = $pdo;
+        // }
     }
 
+    /**
+     * Abstract method to get all data from the table
+     */
 
-    public function all($table ,
-                        $select = ['*'],
-                        $orderBy = [],
-                        $limit = 100
-                        )
-    {
-        $column = implode(',', $select);
-        $orderByStr = implode(',', $orderBy);
+    public function getAll($lim, $offs){
+        $stmt = self::$pdo->prepare("SELECT * FROM $this->table LIMIT $lim OFFSET $offs");
+        $stmt->execute();
 
-        if ($orderByStr){
-            $sql = "SELECT {$column} FROM {$table} ORDER BY {$orderByStr} LIMIT {$limit}";
+        $stmt1 = self::$pdo->prepare("SELECT COUNT(*) FROM $this->table");
+        $stmt1->execute();
+        $count = $stmt1->fetchColumn();
+
+        return [$stmt->fetchAll(PDO::FETCH_ASSOC), $count];
+    }
+
+    /**
+     * Abstract method to get data by value in the column
+     */
+    public function getBy($column, $value, $lim = null, $offs = null){
+        $stmt = self::$pdo->prepare("SELECT * FROM $this->table WHERE $column = :value LIMIT $lim OFFSET $offs");
+        $stmt->execute(['value' => $value]);
+
+        $stmt1 = self::$pdo->prepare("SELECT COUNT(*) FROM $this->table WHERE $column = :value");
+        $stmt1->execute(['value' => $value]);
+        $count = $stmt1->fetchColumn();
+
+        return [$stmt->fetchAll(PDO::FETCH_ASSOC), $count];
+    }
+
+    /**
+     * Example:
+     * model->getWithJoin('id', 1, ['table1.value', 'table1.name', 'table2.name as table2Name'], ['table' => 'table2', 'column' => 'id'])* model->getWithJoin('id', 1, ['table1.value', 'table1.name', 'table2.name as table2Name'], ['table' => 'table2', 'column' => 'id'])
+     */
+    public function getWithJoin($column, $value, $rows, $join){
+        $stmt = $this->pdo->prepare(
+            "SELECT " . implode(",", $rows) . 
+            " FROM $this->table 
+            JOIN {$join['table']} ON $this->table.$column = {$join['table']}." . $join['column'] . 
+            " WHERE $this->table.$column = :value"
+        );
+        $stmt->execute(['value' => $value]);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC); 
+    }
+
+    public function deleteByID($id){
+        $stmt = self::$pdo->prepare("DELETE FROM $this->table WHERE id = :id");
+        $stmt->execute(['id' => $id]);
+    }
+
+    /**
+     * The insert method
+     * 
+     * @param array $data
+     * For example:
+     * $data = ["field1" => "value1", "field2" => "value2"]
+     * @return int The last insert id
+     */
+    public function insert(array $data){
+        if($this->table ===""){
+            throw new Exception("Table name is not defined");
         }
-        else
-        {
-            $sql = "SELECT {$column} FROM {$table} LIMIT {$limit}";
+
+        $marks = array_fill(0, count($data), "?");
+
+        $fields = array_keys($data);
+
+        $values = array_values($data);
+
+        $stmt = self::$pdo->prepare(
+                                "INSERT INTO $this->table (".implode(",",$fields).") 
+                                VALUES (".implode(",",$marks).")");
+
+        $stmt->execute($values);
+
+        return self::$pdo->lastInsertId();
+    }
+    /**
+     * The update method
+     * 
+     * @param array $data
+     * For example:
+     * $data = ["field1" => "value1", "field2" => "value2"]
+     */
+    public function update(array $data, array $where){
+        if($this->table === ""){
+            throw new \Exception("Attribute _table is empty string!");
         }
         
-        $result = $this -> _query($sql);
+        // Fields to be added.
+        $fields = array_keys($data);
+        // Fields values
+        $values = array_values($data);
+
+        $wherefield = array_keys($where);
+        $wherevalue = array_values($where);
+
+        // Prepare statement
+        $stmt = self::$pdo->prepare("
+        UPDATE " . $this->table . " SET ".  implode(', ', array_map(function($field){ return $field . ' = ? '; }, $fields)) ."
+        WHERE " . implode(' AND ', array_map(function($field){ return $field . ' = ? '; }, $wherefield)));
         
-        $data = [];
-        while ($row = mysqli_fetch_assoc($result)){
-            array_push($data, $row);
-        }
-        return $data;
-    }
+        // Execute statement with values
+        $stmt->execute(array_merge($values, $wherevalue));
 
-    public function find($table, $idName, $idValue){
-        $sql = "SELECT * FROM {$table} WHERE {$idName} = '{$idValue}'";
-        $result = $this -> _query($sql);
-        return mysqli_fetch_assoc($result);
-    }
-    
-    public function create($table, $data = []){
-        $key = implode(',',array_keys($data));
-        $newValueArray = array_map(function($value){
-            return "'" . $value . "'";
-        }, array_values($data));
-        $newValue = implode(',', $newValueArray);
-        $sql = "INSERT INTO {$table}({$key}) VALUES ({$newValue})";
-        return $this -> _query($sql);       
-    }
-    public function update($table, $idName ,$idValue, $data = []){
-        
-        $dataSet = [];
-
-        foreach ($data as $key => $value) {
-            array_push($dataSet, "{$key} = '" . $value . "'");
-        }
-        $dataSetStr = implode(',',$dataSet);
-
-        $sql = "UPDATE {$table} SET {$dataSetStr} WHERE {$idName} = '{$idValue}'";
-
-        return $this -> _query($sql);
-
-    }
-    public function delete($table, $idName, $idValue){
-        $sql = "DELETE FROM {$table} WHERE {$idName} = '{$idValue}'";
-        return $this -> _query($sql);
-    }
-    public function _query($sql){
-        return mysqli_query($this -> conn, $sql);
-    }
-    
-    function __destruct() {
-        $this -> closeDatabase($this->conn);
+        // Return last inserted ID.
+        return self::$pdo->lastInsertId();
     }
 }
-?>
+?> 
