@@ -25,4 +25,5 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && $_GET['action'] === 'register') {
 if($_SERVER['REQUEST_METHOD']==='POST'&&$_GET['action']==='changePassword'){
     $userController->changePassword($_POST['id'], $_POST['newPassword']);
 }
+
 ?>

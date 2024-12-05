@@ -95,5 +95,46 @@ class MemberController{
             echo json_encode(["message"=> $msg]);
         }
 
-}
+    }
+
+    public function getAllMember($page, $perPage){
+        [$result, $msg, [$members, $count]] = $this->memberModel->getAllMember($page, $perPage);
+
+        $totalPage = ceil($count / $perPage);
+        $meta = [
+            "page" => $page,
+            "perPage" => $perPage,
+            "totalPage" => $totalPage,
+            "totalRecord" => $count
+        ];
+
+        header("Content-Type: application/json");
+        echo json_encode([
+            "status"=> $result ? "success" : "fail",
+            "message"=> $msg,
+            "data"=> $members,
+            "meta"=> $meta,
+        ]);
+    }
+
+    public function getMemberById($id){
+        [$result, $msg, $members] = $this->memberModel->getMemberById($id);
+        
+        header("Content-Type: application/json");
+        echo json_encode([
+            "status"=> $result ? "success" : "fail",
+            "message"=> $msg,
+            "data"=> $members,
+        ]);
+    }
+
+    public function deleteMemberById($id){
+        [$result, $msg] = $this->memberModel->deleteMember($id);
+
+        header("Content-Type: application/json");
+        echo json_encode([
+            "status"=> $result ? "success":"fail",
+            "message"=> $msg,
+        ]);
+    }
 }

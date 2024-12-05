@@ -142,4 +142,96 @@ class MemberModel extends UserModel{
         }
     }
 
+    /**
+     * Summary of getAllMember
+     * @param mixed $page: page number
+     * @param mixed $perPage: number of member per page
+     * @return [$result, $msg, $members]
+     * $members = [$member1, $member2, ...]
+     * $result = true if success, false if fail
+     * $msg = message
+     */
+    public function getAllMember($page, $perPage){
+        try{    
+            $lim = $perPage;
+            $offset = ($page - 1) * $perPage;
+
+            $stmt = self::$pdo->prepare(
+                "SELECT * FROM $this->MemberTable JOIN $this->table ON $this->MemberTable.id = $this->table.id LIMIT $lim OFFSET $offset");
+            $result = $stmt->execute();
+            
+            $stmt1 = self::$pdo->prepare("SELECT COUNT(*) FROM $this->MemberTable");
+            $stmt1->execute([]);
+            $count = $stmt1->fetchColumn();
+
+            if(!$result){
+                $msg = 'Get all member failed';
+                return [false, $msg,[]];
+            }
+            else{
+                $msg = 'Get all member successfully';
+                return [true, $msg,[$stmt->fetchAll(PDO::FETCH_ASSOC), $count]];
+            }
+        }
+        catch(PDOException $e){
+            // echo $e->getMessage();
+            $msg = 'Get all member failed';
+            return [false, $msg, []];
+        }
+    }
+
+
+    /**
+     * Summary of getMemberById
+     * @param  $id
+     * @return [$result, $msg, $member]
+     */
+    public function getMemberById($id){
+        try{
+            $stmt = self::$pdo->prepare("SELECT * FROM $this->MemberTable JOIN user ON $this->MemberTable.id = $this->table.id WHERE $this->MemberTable.id = :id");
+            $resutl = $stmt->execute(["id"=> $id]);
+            if($resutl){
+                $msg = "Get member by id successfully";
+                $member = $stmt->fetch(PDO::FETCH_ASSOC);
+                if(!$member){
+                    $msg = "Member isn't exist";
+                    return [false, $msg, []];
+                }
+                return [true, $msg, $member];
+            }
+            else{
+                $msg = "Get member by id failed";
+                return [false, $msg, []];
+            }
+        }catch(PDOException $e){
+            // echo $e->getMessage();
+            $msg = "Get member by id failed";
+            return [false, $msg,[]];
+        }
+    }
+
+    //You can delete admin too (need check)
+    /**
+     * Summary of deleteMember
+     * @param  $id
+     * @return array [bool, string]
+     */
+    public function deleteMember($id){
+        try{
+            $result = $this->deleteByID($id);
+            if($result){
+                $msg = "Delete member successfully";
+                return [true, $msg,];
+            }
+            else{
+                $msg = "Delete member failed";
+                return [false, $msg,];
+            }
+        }
+        catch(PDOException $e){
+            echo $e->getMessage();
+            $msg = "Delete member failed";
+            return [false, $msg];
+        }
+    }
 }

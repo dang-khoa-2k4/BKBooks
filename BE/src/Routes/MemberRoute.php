@@ -31,4 +31,13 @@ else if($_SERVER['REQUEST_METHOD']==='POST'&&$_GET['action'] === 'updateInfo'){
         "firstname" => $_POST['firstname'],
     ], $_POST['id']);
 }
+else if($_SERVER['REQUEST_METHOD'] === 'GET'&&$_GET['action']==='getAllMember'){
+    $memberController->getAllMember($_GET['page'], $_GET['perPage']);
+}
+else if($_SERVER['REQUEST_METHOD']==='GET'&&$_GET['action']==='getById'){
+    $memberController->getMemberById($_GET['id']);
+}
+else if($_SERVER['REQUEST_METHOD']==='GET'&&$_GET['action']==='deleteById'){
+    $memberController->deleteMemberById($_GET['id']);
+}
 ?>
