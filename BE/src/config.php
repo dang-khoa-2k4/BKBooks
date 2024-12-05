@@ -1,9 +1,8 @@
 <?php
-
-$host = 'localhost';
-$dbname = 'test';
-$username = 'root';
-$port = '';
+$host = 'mysql-1e3f33b2-bk-book.e.aivencloud.com';
+$dbname = 'bkbook';
+$username = 'avnadmin';
+$port = 28408;
 
 // Tạo kết nối với MySQL
 try {

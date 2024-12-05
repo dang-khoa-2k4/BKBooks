@@ -38,6 +38,8 @@ switch ($requestMethod) {
     case 'POST':
         if(preg_match('/\/members$/', $requestPath)){
             require_once '../src/Routes/MemberRoute.php'; // Nếu URI là /members thì xử lý bằng memberRoutes
+        }elseif (preg_match('/\/books$/', $requestPath)) {
+            require_once '../src/Routes/BookRoute.php'; // Nếu URI là /books thì xử lý bằng bookRoutes
         }
         elseif(preg_match('/\/users$/', $requestPath)){
             require_once '../src/Routes/UserRoute.php'; // Nếu URI là /users thì xử lý bằng userRoutes

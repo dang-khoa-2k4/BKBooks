@@ -42,7 +42,6 @@ if($_SERVER['REQUEST_METHOD'] === 'GET' && $_GET['action'] === 'getBookByAuthor'
 if($_SERVER['REQUEST_METHOD'] === 'POST' && $_GET['action'] === 'addBook') {
     // AuthMiddleware::checkRole('admin');
     $bookController->addBook(array(
-        'id' => $_POST['id'],
         'name' => $_POST['name'],
         'publisher' => $_POST['publisher'],
         'author' => $_POST['author'],

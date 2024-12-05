@@ -20,4 +20,10 @@ else if($_SERVER['REQUEST_METHOD']==='POST'&&$_GET['action'] === 'login'){
         'password' => $_POST['password']
     ]);
 }
+else if($_SERVER['REQUEST_METHOD']==='POST'&&$_GET['action']==='changePassword'){
+    $memberController->changePassword($_POST['id'], $_POST['newPassword']);
+}
+else if($_SERVER['REQUEST_METHOD']==='GET'&& $_GET['action'] === 'infor'){
+    $memberController->getInfo($_GET['id']);
+}
 ?>

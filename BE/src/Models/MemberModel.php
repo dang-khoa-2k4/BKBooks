@@ -16,44 +16,47 @@ class MemberModel extends UserModel{
     /**
      * Register new account for member
      * @param $data
-     * @return bool
+     * @return [$result, $msg]
      * $data = [$username, $password, $firstname, $lastname, $DOB, $phone, $email]
      */
     public function register($data){
-        global $pdo;
-
-        $stmt = $pdo->prepare("SELECT * FROM $this->table WHERE username = :username");
+    try{
+        $stmt = self::$pdo->prepare("SELECT * FROM $this->table WHERE username = :username");
         $stmt->execute(['username' => $data['username']]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($user) {
-            return false; // Trả về false nếu tài khoản đã tồn tại
+            $msg = "Username already exists";
+            return [false, $msg];
         }
 
 
         //check email exist
-        $stmt = $pdo->prepare("SELECT * FROM $this->MemberTable WHERE email = :email");
+        $stmt = self::$pdo->prepare("SELECT * FROM $this->MemberTable WHERE email = :email");
         $stmt->execute(['email' => $data['email']]);
         $member = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($member) {
-            echo "Email already exists";
-            return false; // Trả về false nếu email đã tồn tại
+            $msg = "Email already exists";
+            return [false, $msg];
         }
 
-        $stmt = $pdo->prepare("INSERT INTO $this->table (username, password, role) VALUES (:username, :password, :role)");
-        $stmt->execute([
+        $stmt = self::$pdo->prepare("INSERT INTO $this->table (username, password, role) VALUES (:username, :password, :role)");
+        $result = $stmt->execute([
             'username' => $data['username'],
             'password' => password_hash($data['password'], PASSWORD_DEFAULT),
             'role' => 'member'
         ]);
 
+        if(!$result){
+            $msg = 'Register failed';
+            return [false, $msg];
+        }
 
+        $lastId = self::$pdo->lastInsertId();
 
-        $lastId = $pdo->lastInsertId();
-
-        $stmt = $pdo->prepare("INSERT INTO $this->MemberTable (id,firstname, lastname, DOB, phone, email, status) VALUES (:id,:firstname, :lastname, :DOB, :phone, :email, :status)");
-        $stmt->execute([
+        $stmt = self::$pdo->prepare("INSERT INTO $this->MemberTable (id,firstname, lastname, DOB, phone, email, status) VALUES (:id,:firstname, :lastname, :DOB, :phone, :email, :status)");
+        $result = $stmt->execute([
             'id' => $lastId,
             'firstname' => $data['firstname'],
             'lastname' => $data['lastname'],
@@ -63,6 +66,41 @@ class MemberModel extends UserModel{
             'status' => 'active'
         ]);
 
-        return true; // Trả về true nếu đăng ký thành công
+        if(!$result){
+            $msg = 'Register failed';
+            return [false, $msg];
+        }
+
+        $msg = 'Register successfully';
+        return [true, $msg];
+
+    }catch(PDOException $e){
+        $msg = "Register failed";
+        return [false, $msg];
+    }
+    }
+
+    public function getInfor($id){
+    try{
+        $stmt = self::$pdo->prepare('SELECT firstname, lastname, DOB, phone, email FROM member WHERE id = :id');
+        $result = $stmt->execute(['id'=> $id]);
+
+        if(!$result){
+            $msg = 'Get infor failed';
+            return [false, $msg, []];
+        }
+        else{
+            $data = $stmt->fetch(PDO::FETCH_ASSOC);
+            if(!$data){
+                $msg = 'Member isn\'t exist';
+                return [false, $msg, []];
+            }
+            $msg = 'Get infor successfully';
+            return [true, $msg,$data];
+        }
+    }catch(PDOException $e){
+        $msg = 'Get infor failed';
+        return [false, $msg, []];
+    }
     }
 }

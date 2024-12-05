@@ -2,23 +2,22 @@
 require_once '../src/Models/UserModel.php';
 
 class UserController {
+    private $userModel;
     public function __construct() {
         $this->userModel = new UserModel();
     }
     // Đăng nhập
-    public function login() {
-        $data = json_decode(file_get_contents("php://input"));
-        
-        if (isset($data->username) && isset($data->password)) {
-            $user = UserModel::login($data->username, $data->password);
+    public function login($data) {
+        if (isset($data["username"]) && isset($data["password"])) {
+            $user = $this->userModel->login(["username"=>$data["username"],"password"=> $data["password"]]);
             if ($user) {
                 // Nếu đăng nhập thành công, lưu thông tin vào session
-                session_start();
-                $_SESSION['user_id'] = $user['id'];
-                $_SESSION['username'] = $user['username'];
-                $_SESSION['role'] = $user['role']; // Lưu role người dùng
+                // session_start();
+                // $_SESSION['user_id'] = $user['id'];
+                // $_SESSION['username'] = $user['username'];
+                // $_SESSION['role'] = $user['Role']; // Lưu role người dùng
                 
-                echo json_encode(['message' => 'Login successful', 'role' => $user['role']]);
+                echo json_encode(['message' => 'Login successful', $user]);
             } else {
                 echo json_encode(['message' => 'Invalid credentials']);
             }
@@ -59,18 +58,30 @@ class UserController {
     public function register($username, $password) {
         
         if ($username && $password) {
-            $result = UserModel::register([
+            $result = $this->userModel->register([
                 'username' => $username,
                 'password' => $password
             ]);
             if ($result) {
-                echo json_encode(['message' => 'Register successful']);
+                echo json_encode(['message' => $result]);
             } else {
                 echo json_encode(['message' => 'Username already exists']);
             }
         } else {
             echo json_encode(['message' => 'Please provide username and password']);
         }
+    }
+ 
+    public function changePassword($id, $newPassword){
+        if ($id && $newPassword) {
+            $result = $this->userModel->changePassword(["id"=>$id,"newPassword"=> $newPassword]);
+            if ($result) {
+                echo json_encode(["message"=> "Change password successful"]);
+            } else {
+                echo json_encode(["message"=> "Change password failed"]);
+            }
+        }
+        else echo json_encode(["message"=> "Please provide id and new password"]);
     }
 }
 ?>

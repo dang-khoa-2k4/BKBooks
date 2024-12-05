@@ -6,79 +6,117 @@ class BookController {
         $this->bookModel = new BookModel();
     }
     public function getBooks($page, $perPage) {
-        [$books, $count] = $this->bookModel->getAllBooks($page, $perPage);
+        [$result,$msg,[$books, $count]] = $this->bookModel->getAllBooks($page, $perPage);
 
-        $totalPage= ceil($count/$perPage);
-
-        $meta = [
-            "page" => $page,
-            "perPage" => $perPage,
-            "totalPage" => $totalPage,
-            "totalRecord" => $count
-        ];
 
         header('Content-Type: application/json');
-        $response = [
-            "status" => "success",
-            "message" => "Get all books successfully",
-            "data" =>$books,
-            "meta" => $meta 
-        ];
-        echo json_encode($response);
+        if ($result) {
+            $totalPage= ceil($count/$perPage);
+
+            $meta = [
+                "page" => $page,
+                "perPage" => $perPage,
+                "totalPage" => $totalPage,
+                "totalRecord" => $count
+            ];
+
+            $response = [
+                "status" => "success",
+                "message" => $msg,
+                "data" =>$books,
+                "meta" => $meta 
+            ];
+            echo json_encode($response);
+        } else {
+                $response = [
+                    "status" => "fail",
+                    "message" => $msg,
+                    "data" => []
+                ];
+            echo json_encode($response);
+        }
     }
-
     public function getBookById($id) {
-        [$book] = $this->bookModel->getBookById($id);
+        [$result, $msg, $book] = $this->bookModel->getBookById($id);
 
         header('Content-Type: application/json');
-        $response = [
-            "status" => "success",
-            "message" => "Get book by id successfully",
-            "data" => $book
-        ];
-        echo json_encode($response);
+        if ($result) {
+            $respone = [
+                'status'=> 'success',
+                'message'=> $msg,
+                'data'=> $book
+            ];
+            echo json_encode($respone);
+        }
+        else{
+            $response = [
+                'status'=> 'fail',
+                'message'=> $msg,
+                'data'=> []
+                ];
+            echo json_encode($response);
+        }
     }
 
 
     public function getBookByGenre($genre, $page, $perPage) {
-        [$books, $count] = $this->bookModel->getBookByGenre($genre, $page, $perPage);
-
-        $totalPage= ceil($count/$perPage);
-        $meta = [
-            "page" => $page,
-            "perPage" => $perPage,
-            "totalPage" => $totalPage,
-            "totalRecord" => $count
-        ];
+        [$result,$msg,[$books, $count]] = $this->bookModel->getBookByGenre($genre, $page, $perPage);
 
         header('Content-Type: application/json');
-        $response = [
-            "status" => "success",
-            "message" => "Get book by genre successfully",
-            "data" => $books,
-            "meta" => $meta
-        ];
-        echo json_encode($response);
+        if ($result) {
+            $totalPage= ceil($count/$perPage);
+
+            $meta = [
+                "page" => $page,
+                "perPage" => $perPage,
+                "totalPage" => $totalPage,
+                "totalRecord" => $count
+            ];
+
+            $response = [
+                "status" => "success",
+                "message" => $msg,
+                "data" =>$books,
+                "meta" => $meta 
+            ];
+            echo json_encode($response);
+        } else {
+                $response = [
+                    "status" => "fail",
+                    "message" => $msg,
+                    "data" => []
+                ];
+            echo json_encode($response);
+        }
     }
 
     public function getBookByAuthor($author, $page, $perPage){
-        [$books, $count] = $this->bookModel->getBookByAuthor($author, $page, $perPage);
-
-        $totalPage= ceil($count/$perPage);
-        $meta = [
-            "page" => $page,
-            "perPage" => $perPage,
-            "totalPage" => $totalPage,
-            "totalRecord" => $count
-        ];
+        [$result, $msg, [$books, $count]] = $this->bookModel->getBookByAuthor($author, $page, $perPage);
 
         header('Content-Type: application/json');
-        $response = [
-            "status" => "success",
-            "message" => "Get book by author successfully",
-            "data" => $books,
-            "meta" => $meta
-        ];
+        if ($result) {
+            $totalPage= ceil($count/$perPage);
+            $meta = [
+                "page" => $page,
+                "perPage" => $perPage,
+                "totalPage" => $totalPage,
+                "totalRecord" => $count
+            ];
+
+            
+            $response = [
+                "status" => "success",
+                "message" => $msg,
+                "data" => $books,
+                "meta" => $meta
+            ];
+        } else {
+            $response = [
+                "status" => "fail",
+                "message" => $msg,
+                "data" => []
+            ];
+        }
         echo json_encode($response);
     }
 
@@ -96,12 +134,12 @@ class BookController {
     }
 
     public function updateBook($data, $where) {
-        $this->bookModel->updateBook($data, $where);
+        [$result, $msg] = $this->bookModel->updateBook($data, $where);
 
         header('Content-Type: application/json');
         $response = [
-            "status" => "success",
-            "message" => "Update book successfully"
+            "status" => $result ? "success" : "fail",
+            "message" => $msg
         ];
         echo json_encode($response);
     }
