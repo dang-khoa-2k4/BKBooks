@@ -1,8 +1,8 @@
 <?php
 require_once '../src/Controllers/MemberController.php';
-
+require_once '../src/Controllers/CartController.php';
 $memberController = new MemberController();
-
+$cartController = new CartController();
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_GET['action'] === 'register') {
     $memberController->register([
         'username' => $_POST['username'],
@@ -39,5 +39,15 @@ else if($_SERVER['REQUEST_METHOD']==='GET'&&$_GET['action']==='getById'){
 }
 else if($_SERVER['REQUEST_METHOD']==='GET'&&$_GET['action']==='deleteById'){
     $memberController->deleteMemberById($_GET['id']);
+}
+else if($_SERVER['REQUEST_METHOD']==="POST"&&$_GET['action']==='addToCart'){
+    $cartController->addToCart([
+        "memberid" => $_POST['member_id'],
+        "bookid" => $_POST['book_id'],
+        "quantity" => $_POST['quantity']
+    ]);
+}
+else if($_SERVER['REQUEST_METHOD']==='GET'&&$_GET['action']==='getAllBookInCart'){
+    $cartController->getBookInCart($_GET['id'], $_GET['page'], $_GET['perPage']);
 }
 ?>
