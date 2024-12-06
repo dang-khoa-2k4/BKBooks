@@ -31,3 +31,40 @@ export const customerModalAdd = [
     ["SDT","user_phone"]
 ]
 
+
+// sample data for client
+export const client = [
+    {
+        id:"1",
+        name:"user1",
+        password:"1"
+    },
+    {
+        id:"2",
+        name:"user2",
+        password:"2"
+    },
+    {
+        id:"3",
+        name:"user3",
+        password:"3"
+    }
+]
+
+// sample data for client
+export const clientCart = [
+    {
+        id:"1",
+        book_order:[
+            {
+                id:"1",
+                quantity:1
+            },
+            {
+                id:"2",
+                quantity:1
+            }
+            
+        ]
+    },
+]

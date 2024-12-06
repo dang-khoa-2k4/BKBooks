@@ -33,7 +33,7 @@ const Login = () => {
             );
 
             if (isValidUser) {
-                navigate('/book/view'); // Điều hướng đến /book/view
+                navigate('/admin/book/view'); // Điều hướng đến /book/view
             } else {
                 alert('Tên tài khoản hoặc mật khẩu không đúng!');
             }
