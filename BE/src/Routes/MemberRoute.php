@@ -50,4 +50,15 @@ else if($_SERVER['REQUEST_METHOD']==="POST"&&$_GET['action']==='addToCart'){
 else if($_SERVER['REQUEST_METHOD']==='GET'&&$_GET['action']==='getAllBookInCart'){
     $cartController->getBookInCart($_GET['id'], $_GET['page'], $_GET['perPage']);
 }
+else if($_SERVER['REQUEST_METHOD'] ==="POST"&& $_GET["action"]=== "updateQuantity"){
+    $cartController->updateQuantity([
+        "quantity"=> $_POST['quantity']
+    ],[
+        "memberID" => $_POST['memberID'],
+        'bookID'=> $_POST['bookID'],
+    ]);
+}
+else if($_SERVER['REQUEST_METHOD'] ==="POST"&& $_GET["action"]=== "deleteBookInCart"){
+    $cartController->deleteBookInCart($_POST['memberID'], $_POST['bookID'] ? explode(',',$_POST['bookID']): $_POST['bookID']);
+}
 ?>

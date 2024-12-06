@@ -53,4 +53,22 @@ class CartController{
             echo json_encode($response);
         }
     }
+
+    public function updateQuantity($data, $where){
+        [$result, $msg] = $this->cartModel->updateQuantity($data, $where); 
+        header("Content-Type: application/json");
+        echo json_encode([
+            "status"=> $result ? "success" : "fail",
+            "message"=> $msg
+        ]);
+    }
+
+    public function deleteBookInCart($memberID, $bookID){
+        [$result, $msg] = $this->cartModel->deleteBook($memberID, $bookID);
+        header("Content-Type: application/json");
+        echo json_encode([
+            "status"=> $result ? "success" :"fail",
+            "message"=> $msg
+        ]); 
+    }
 };

@@ -36,6 +36,13 @@ class CartModel extends BaseModel{
         }
     }
 
+    /**
+     * Summary of getAllBookInCart
+     * @param mixed $memberID
+     * @param mixed $page
+     * @param mixed $perPage
+     * @return array
+     */
     public function getAllBookInCart($memberID, $page, $perPage){
         try{
             $lim = $perPage;
@@ -73,6 +80,69 @@ class CartModel extends BaseModel{
         catch(Exception $e){
             $msg = "Get all book in cart failed";
             return [false, $msg, []];
+        }
+    }
+
+    /**
+     * Summary of updateQuantity
+     * @param mixed $data. $data = ["quantity"=> $quantity]
+     * @param mixed $where. $where = ["memberID"=> $id, "bookID"=> $id]
+     * @return array
+     */
+    public function updateQuantity($data, $where){
+        try{
+            $result = $this->update($data, $where);
+            if($result){
+                $msg = "Update quantity successfully";
+                return [true, $msg];
+            }else{
+                $msg = "Update quantity failed";
+                return [false, $msg];
+            }
+        }
+        catch(Exception $e){
+            // $msg = $e->getMessage();
+            $msg = "Update quantity failed";
+            return [false, $msg];
+        }
+    }
+
+    /**
+     * Summary of deleteBook
+     * @param mixed $memberID 
+     * @param array $bookID (careful with array)
+     * @return [$result, $msg]
+     * if not provide $bookID, delete all book in cart of member
+     */
+    public function deleteBook($memberID, $bookID=0){
+        try{
+            if(!$memberID){
+                $msg = "Member isn't provided";
+                return [false, $msg];
+            }
+
+            if(!$bookID){
+                $stmt = self::$pdo->prepare("DELETE FROM $this->table WHERE memberID = :memberID");
+                $result = $stmt->execute(["memberID"=> $memberID]);
+            }
+            else{
+                $bookList = "'".implode("','", $bookID)."'";
+                $stmt = self::$pdo->prepare("DELETE FROM $this->table WHERE memberID = :memberID AND bookID IN ($bookList)");
+                $result = $stmt->execute(["memberID"=> $memberID]);
+            }
+
+            if($result){
+                $msg = "Remove book from cart successfully";
+                return [true, $msg];
+            }
+            else{
+                $msg = "Remove book from cart failed";
+                return [false, $msg];
+            }
+        }
+        catch(Exception $e){
+            $msg = "Remove book from cart failed";
+            return [false, $msg];
         }
     }
 }
