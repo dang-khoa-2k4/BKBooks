@@ -137,7 +137,7 @@ export const book = [
         book_author: "Jane Smith",
         book_price: "42.00 $",
         book_description: "A comprehensive guide to mastering the fundamentals of finance.",
-        book_image: image5,
+        book_image: "https://scontent.fsgn19-1.fna.fbcdn.net/v/t1.15752-9/467478088_1494048438650636_4641463616605546223_n.png?_nc_cat=101&ccb=1-7&_nc_sid=9f807c&_nc_eui2=AeHCbB3hx4OTqptw6md3NgOxeJcsahObz1p4lyxqE5vPWizn4PmtqqRYb1K5-l5DVll7uAfP5A2tRMWjD3P9wco6&_nc_ohc=LXR42I03lQ0Q7kNvgGZtcLi&_nc_zt=23&_nc_ht=scontent.fsgn19-1.fna&oh=03_Q7cD1QEUKpgR3hpdB86KoO0JQwEtLLQF54R9c4J9f7pTz-kI7A&oe=677432BE",
         book_category: "finance", // Explicitly set to "finance"
         book_start: 4,
         book_review: 310,
@@ -148,12 +148,12 @@ export const book = [
       },
       {
         book_id: "7", // Starting index from 2
-        book_name: "Building Engineering Wonders",
+        book_name: "Chó xúc xích",
         book_publisher: "Engineering Press",
         book_author: "Tom Clark",
         book_price: "50.00 $",
         book_description: "Explore some of the world's most amazing engineering feats.",
-        book_image: image6,
+        book_image: "https://scontent.fsgn19-1.fna.fbcdn.net/v/t1.15752-9/457233080_533687812438851_3662061376447174919_n.png?_nc_cat=100&ccb=1-7&_nc_sid=9f807c&_nc_eui2=AeFg0kHqlNPhYSRORw9TbZkb7n-np-SPQY_uf6en5I9Bj7OVWFpyf2QfnlniIb9aOIRMQIElmMWhykXThPKy4CDj&_nc_ohc=niNXFHPEnkkQ7kNvgHxYj7H&_nc_zt=23&_nc_ht=scontent.fsgn19-1.fna&oh=03_Q7cD1QEX-kkhnY_qjB661VUdAszmisDGSZ1BoqzsqsxH6QUVWQ&oe=6773FB72",
         book_category: "engineer", // Explicitly set to "engineer"
         book_start: 3,
         book_review: 400,

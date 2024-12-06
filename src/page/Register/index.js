@@ -1,197 +1,127 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { baseURL } from '../../Config/API';
-// import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { ToastContainer, toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
-
+import React from 'react';
+import image from "../../Assert/images/background 1.png"
+import { user } from '../../data/user';
+import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
-  const navigate = useNavigate(); // Khởi tạo useNavigate
+    const navigate = useNavigate();
 
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    address: '',
-    phone: '',
-    password: '',
-    confirmPassword: ''
-  });
-
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value
+    const [formData, setFormData] = React.useState({
+        username: '',
+        password: ''
     });
-  };
+    const [isLoading, setIsLoading] = React.useState(false);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+    // Hàm xử lý thay đổi giá trị của các trường nhập liệu
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({
+            ...formData,
+            [name]: value
+        });
+    };
 
-    // Kiểm tra nếu mật khẩu và xác nhận mật khẩu giống nhau
-    if (formData.password !== formData.confirmPassword) {
-      setError('Mật khẩu không khớp!');
-      return;
-    }
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        setIsLoading(true);
+        const isValidUser = user.some(
+            (u) => u.username === formData.username && u.password === formData.password
+        );
 
-    setIsLoading(true);
-    setError('');
+        setTimeout(() => {
+            if (isValidUser) {
+                navigate('/book/view'); // Điều hướng đến /book/view
+            } else {
+                alert('Tên tài khoản hoặc mật khẩu không đúng!');
+            }
+            setIsLoading(false); // Tắt trạng thái tải
+        }, 1000); // Mô phỏng thời gian xử lý 1 giây
+    };
 
-    const data = {
-      username: formData.email, // Chúng ta dùng email làm username
-      password: formData.password,
-      address: formData.address,
-      phone: formData.phone,
-      name: formData.name
-    };  
+    return (
+        <section className="bg-white dark:bg-gray-900">
+            <div className="max-w-screen-xl">
+                <div className="lg:grid lg:grid-cols-2 lg:gap-4">
+                    {/* Image */}
+                    <div className="shrink-0 max-w-md lg:max-w-lg">
+                        <img className="w-full dark:hidden" src={image} alt="Background" />
+                    </div>
 
-    console.log(data)
-    try {
-      const response = await fetch(baseURL + '/auth/register/customer', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-      });
-
-      const result = await response.json();
-
-      console.log(result)
-      if (result.status == 200) {
-        toast.success('Đăng ký thành công!');
-        navigate("/login")
-      } else {
-        toast.error(result.message); 
-      }
-    } catch (error) {
-        toast.error(Error); 
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  return (
-    <section className="dark:bg-gray-900 mt-10">
-        <ToastContainer />
-      <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-        <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
-          <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-            <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-              Create an account
-            </h1>
-            {error && (
-              <div className="text-red-500 text-sm">
-                {error}
-              </div>
-            )}
-            <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
-              <div>
-                <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your Full Name</label>
-                <input
-                  type="text"
-                  name="name"
-                  id="name"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  placeholder="Enter full name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-
-              <div>
-                <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your email</label>
-                <input
-                  type="email"
-                  name="email"
-                  id="email"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  placeholder="name@company.com"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-
-              <div>
-                <label htmlFor="address" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your Address</label>
-                <input
-                  type="text"
-                  name="address"
-                  id="address"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  placeholder="Enter your address"
-                  value={formData.address}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-
-              <div>
-                <label htmlFor="phone" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your Phone</label>
-                <input
-                  type="tel"
-                  name="phone"
-                  id="phone"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  placeholder="Enter your phone number"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-
-              <div>
-                <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
-                <input
-                  type="password"
-                  name="password"
-                  id="password"
-                  placeholder="••••••••"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-
-              <div>
-                <label htmlFor="confirm-password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Confirm password</label>
-                <input
-                  type="password"
-                  name="confirmPassword"
-                  id="confirmPassword"
-                  placeholder="••••••••"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-
-              <button
-                type="submit"
-                className="w-full text-white bg-blue-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-                disabled={isLoading}
-              >
-                {isLoading ? 'Loading...' : 'Create an account'}
-              </button>
-
-              <p className="text-sm font-light text-gray-500 dark:text-gray-400">
-                Already have an account? <Link to="/login" className="font-medium text-primary-600 hover:underline dark:text-primary-500">Login here</Link>
-              </p>
-            </form>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
+                    {/* Form login */}
+                    <div className="mt-10 sm:mt-10 lg:mt-16">
+                        <div className="flex flex-col items-center justify-center px-6  mx-auto md:h-screen lg:py-0">
+                            <a href="#" className="flex items-center text-2xl font-semibold text-gray-900 dark:text-white">
+                                <img className="w-16 h-16 mr-2" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmMiyNm0-af3xQ5CPPwsVinkTyy0oc_MsvxQ&s" alt="logo" />
+                            </a>
+                            <div className="w-full bg-white rounded-lg dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+                                <div className="space-y-4 sm:p-8">
+                                    
+                                    <p class="text-gray-500 dark:text-gray-400 mt-5">
+                                        Welcome back!
+                                    </p>
+                                    <h1
+                                        class="text-2xl font-semibold text-gray-900 sm:text-2xl dark:text-white"
+                                        style={{color:"#000"}}
+                                    >
+                                        Register Account
+                                    </h1>
+                                    <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
+                                        <div>
+                                            <label htmlFor="username" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tên tài khoản</label>
+                                            <input 
+                                                type="username" 
+                                                name="username" 
+                                                id="username" 
+                                                onChange={handleChange} 
+                                                value={formData.username} 
+                                                className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                                                placeholder="Nhập tài khoản" 
+                                                required 
+                                            />
+                                        </div>
+                                        <div>
+                                            <label htmlFor="username" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">E-mail</label>
+                                            <input 
+                                                type="email" 
+                                                name="email" 
+                                                id="email" 
+                                                onChange={handleChange} 
+                                                value={formData.username} 
+                                                className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                                                placeholder="Nhập email" 
+                                                required 
+                                            />
+                                        </div>
+                                        <div>
+                                            <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Mật khẩu</label>
+                                            <input 
+                                                type="password" 
+                                                name="password" 
+                                                id="password" 
+                                                onChange={handleChange} 
+                                                value={formData.password} 
+                                                placeholder="Nhập mật khẩu" 
+                                                className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                                                required 
+                                            />
+                                        </div>
+                                        <div className="flex flex-col justify-end">
+                                            <button 
+                                                type="button" 
+                                                className="text-white bg-orange-500 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+                                            >
+                                                Đăng kí
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>  
+                    </div>
+                </div>
+            </div>
+        </section>
+    );
 };
 
 export default Register;

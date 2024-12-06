@@ -1,7 +1,6 @@
-import React from "react";
+import logo from "./logo.svg";
+import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { ToastContainer } from 'react-toastify'; // Import ToastContainer
-import 'react-toastify/dist/ReactToastify.css'; // Import CSS Toastify
 
 // Admin
 import Login from "./page/Login";
@@ -26,9 +25,6 @@ import Payment from "./page/Payment";
 import ScrollToTop from "./utils/scrolltop";
 import { AuthProvider } from "./Wrapper App";
 import ProtectedRoute from "./Auth/index";
-import MyProduct from "./page/Items";
-import ProductOrders from "./page/order";
-import MyFarmer from "./page/Farmer";
 
 function App() {
   return (
@@ -40,14 +36,44 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<LoginUser />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/listing" element={<ProtectedRoute><Listing /></ProtectedRoute>} />
-          <Route path="/myproduct" element={<ProtectedRoute><MyProduct /></ProtectedRoute>} />
-          <Route path="/mycart" element={<ProtectedRoute><ProductOrders /></ProtectedRoute>} />
-          <Route path="/myfarmer/:id" element={<ProtectedRoute><MyFarmer /></ProtectedRoute>} />
 
-          <Route path="/book-detail/:id/:gentype" element={<BookDetail />} />
-          <Route path="/cart/:id" element={<ProtectedRoute><Cart /></ProtectedRoute>} />
-          <Route path="/payment/:id" element={<ProtectedRoute><Payment /></ProtectedRoute>} />
+          <Route
+            path="/listing"
+            element={
+              <ProtectedRoute>
+                <Listing />
+              </ProtectedRoute>
+            }
+          />  
+
+          <Route
+            path="/book-detail/:id"
+            element={
+              <ProtectedRoute>
+                <BookDetail />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/cart/:id"
+            element={
+              <ProtectedRoute>
+                <Cart />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/payment/:id"
+            element={
+              <ProtectedRoute>
+                <Payment />
+              </ProtectedRoute>
+            }
+          />
+          {/* <ProtectedRoute path="/listing" element={<Listing />} />
+          <ProtectedRoute path="/book-detail/:id" element={<BookDetail />} />
+          <ProtectedRoute path="/cart" element={<Cart />} />
+          <ProtectedRoute path="/payment/:id" element={<Payment />} /> */}
 
           {/* Admin */}
           <Route path="/admin/login" element={<Login />} />
@@ -60,9 +86,6 @@ function App() {
             <Route path="customer" element={<Customer />} />
           </Route>
         </Routes>
-
-        {/* Thêm ToastContainer ở đây để hiển thị thông báo */}
-        <ToastContainer />
       </BrowserRouter>
     </AuthProvider>
   );

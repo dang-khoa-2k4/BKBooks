@@ -9,6 +9,7 @@ import Footer from "../../components/Footer";
 import { Link } from "react-router-dom";
 
 import {book} from "../../data/book"
+import { useEffect } from "react";
 
 const Home = () => {
     console.log(book)

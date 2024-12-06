@@ -7,19 +7,12 @@ import {book} from "../../data/book"
 
 import { Link } from "react-router-dom";
 
-import { baseURL } from "../../Config/API";
-
-import { getAllProducts } from "../../Services/product";
-import { useEffect,useState } from "react";
-import { token } from "../../Config/API";
-import { useAuth } from "../../Wrapper App";
-
-const BookCard1 = ({img,title,author,price,id,gentype}) => {
+const BookCard1 = ({img,title,author,price,id}) => {
     return(
         <div class="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
             <div class="h-56 w-full">
-            <Link to={`/book-detail/${id}/${gentype}`}>
-                <img class="mx-auto h-60 dark:hidden w-40" src="https://static.thenounproject.com/png/13643-200.png" alt="" />
+            <Link to={`/book-detail/${id}`}>
+                <img class="mx-auto h-60 dark:hidden w-40" src={img} alt="" />
             </Link>
             </div>
             <div class="pt-6">
@@ -90,7 +83,7 @@ const BookCard1 = ({img,title,author,price,id,gentype}) => {
             <h2
             class="mt-5 text-2xl font-semibold text-orange-500 sm:text-2xl dark:text-white"
           > 
-             {price} Đ
+            $ {price}
           </h2>
 
             </div>
@@ -108,60 +101,12 @@ const filterBooksByCategory = (category,books) => {
 
 const Listing = () => {
 
-    const [product,setProduct] = useState([])
-    const [loading, setLoading] = useState(true); // Loading state
-    const [totalPages, setTotalPages] = useState(0);
-    const userId = useAuth()
-    const [pagination, setPagination] = useState({
-        currentPage: 1,  // Trang hiện tại
-        itemPerPage: 10,
-        sort:0  // Số lượng sản phẩm mỗi trang
-    });
-    console.log("Đây là user",userId.userId)
-    useEffect(() => {
-        console.log(pagination)
-        setLoading(true);
-        const fetchData = async () => {
-            const result = await getAllProducts(pagination.currentPage, pagination.itemPerPage,userId?.userId?.token);
-            console.log("This is result",result)
-            setProduct(result);
-            setTotalPages(result.metaInfo.totalPages);
-
-        };
-    
-        fetchData();
-        setTimeout(() => {
-            setLoading(false); // End loading
-        },1500)
-    
-    },[pagination])
-
 
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
     const value = queryParams.get('category');
 
     const books = filterBooksByCategory(value,book)
-
-    const handlePageChange = (newPage) => {
-        if (newPage > 0 && newPage <= totalPages) {
-            setPagination({ ...pagination, currentPage: newPage });
-        }
-    };
-
-    const handleItemsPerPageChange = (e) => {
-        const items = parseInt(e.target.value, 10);
-        console.log(items)
-        setPagination((prev) => ({ ...prev, itemPerPage: items, currentPage: 1 })); // Reset to page 1 when items per page changes
-    };
-
-    const handlePrice = (e) => {
-        const items = parseInt(e.target.value, 10);
-        console.log(items)
-        setPagination((prev) => ({ ...prev, sort: items, currentPage: 1 })); // Reset to page 1 when items per page changes
-    };
-
-    console.log("This is product",product)
 
     return(
         <div className="flex flex-col">
@@ -179,36 +124,21 @@ const Listing = () => {
                     <i class="fa-solid fa-minus"></i>
                 </div>
                 <div  style={{color:"#393280"}} className="flex justify-between items-center px-3">
-                    <form class="max-w-sm mx-auto">
-                        <label for="underline_select" class="sr-only">Underline select</label>
-                        <select
-                            id="underline_select"
-                            value={pagination?.itemPerPage}
-                            onChange={handleItemsPerPageChange}
-                            className="block py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer"
-                        >
-                            <option value={10}>10 trang</option>
-                            <option value={20}>20 trang</option>
-                            <option value={50}>50 trang</option>
-                            <option value={100}>100 trang</option>
-                            <option value={500}>500 trang</option>
-                        </select>
-                    </form>
+                    <span  style={{color:"#393280"}}>Sort by : Alphabetically, A-Z</span>
+                    <i class="fa-solid fa-caret-down"></i>
                 </div>
                 <div  style={{color:"#393280"}} className="flex justify-between items-center px-3">
-                    <span  style={{color:"#393280"}}>{`Showing ${product?.metaInfo?.perPage} of ${product?.metaInfo?.total}`}</span>
+                    <span  style={{color:"#393280"}}>{`Showing ${books.length} of ${book.length}`}</span>
                 </div>
                 <div  style={{color:"#393280"}}className="flex justify-between items-center px-3" >
-                         <select
-                            id="underline_select"
-                            value={pagination?.sort}
-                            onChange={handlePrice}
-                            className="block py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer"
-                        >
-                            <option value={0}>Không sắp xếp</option>
-                            <option value={2}>Giá tăng</option>
-                            <option value={1}>Giá giảm</option>
-                        </select>
+                    <div>
+                        <span  style={{color:"#393280"}}>Price</span>
+                        <i class="fa-solid fa-caret-down ml-5"></i>
+                    </div>
+                    <div className="flex items-center">
+                        <img src={widget} className="h-5 w-5"/>
+                        <i class="fa-solid fa-bars text-2xl ml-3"></i>
+                    </div>
                 </div>
             </div>
 
@@ -255,61 +185,21 @@ const Listing = () => {
                 </div>
 
                 <div class="col-span-3 p-4">
-                {loading ? (
-                        <div className="flex flex-col justify-center items-center h-96">
-                            <div className="flex flex-col justify-center items-center h-96">
-                                <div className="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full border-gray-300 border-t-4 border-t-red-500" role="status">
-                                    <span className="sr-only">.</span>
-                                </div>
-                                <h2 className="font-bold text-xl text-black mt-4">Đang tải sản phẩm...</h2>
-                            </div>
+                    <div class="grid grid-cols-3 gap-4">
+                    {books.map((book) => (
+                        <div key={book.book_id} className="p-4">
+                            <BookCard1
+                            img={book.book_image}
+                            title={book.book_name}
+                            author={book.book_author}
+                            price={book.book_price}
+                            id={book.book_id}
+                            />
                         </div>
-                    ) : (
-                        <>
-                         <ul class="flex items-center -space-x-px h-8 text-sm justify-center">
-                            <li>
-                                <button onClick={() => handlePageChange(pagination.currentPage - 1)} class="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                                    <span class="sr-only">Previous</span>
-                                    <svg class="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/>
-                                    </svg>
-                                </button>
-                            </li>
-                            <li>
-                                <a href="#" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">{product.metaInfo.current}</a>
-                            </li>
-                            <li>
-                                <button onClick={() => handlePageChange(pagination.currentPage + 1)}  class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                                    <span class="sr-only">Next</span>
-                                    <svg class="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
-                                    </svg>
-                                </button>
-                            </li>
-                        </ul>
-                        <div className="grid grid-cols-3 gap-4">
-                            {product?.data?.length > 0 && product?.data?.map((book, index) => (
-                                <div key={index} className="p-4">
-                                    <BookCard1
-                                        title={book.Breed}
-                                        // author={book.book_author}
-                                        price={book.Price}
-                                        id={book.ID}
-                                        gentype={book.gen_type}
-                                    />
-                                </div>
-                            ))}
-                        </div>
-                        <div class="grid col-span-3 gap-4 flex justify-center">
-                       
+                    ))}
                     </div>
-                    </>
-                    )}
-
-
-                    
                 </div>
-                
+
              </div>
         </div>  
     )

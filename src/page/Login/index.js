@@ -22,6 +22,7 @@ const Login = () => {
 
     const handleSubmit =(e) => {
         e.preventDefault()
+        
         setIsLoading(true);
         const isValidUser = user.some(
             (u) => u.username === formData.username && u.password === formData.password
