@@ -36,7 +36,12 @@ abstract class BaseModel{
         $stmt->execute();
 
         $stmt1 = self::$pdo->prepare("SELECT COUNT(*) FROM $this->table");
-        $stmt1->execute();
+        $result = $stmt1->execute();
+
+        if(!$result){
+            return false;
+        }
+
         $count = $stmt1->fetchColumn();
 
         return [$stmt->fetchAll(PDO::FETCH_ASSOC), $count];
@@ -45,14 +50,31 @@ abstract class BaseModel{
     /**
      * Abstract method to get data by value in the column
      */
-    public function getBy($column, $value, $lim = null, $offs = null){
+    public function getBy($column, $value, $lim = 1, $offs = 0){
         $stmt = self::$pdo->prepare("SELECT * FROM $this->table WHERE $column = :value LIMIT $lim OFFSET $offs");
         $stmt->execute(['value' => $value]);
 
         $stmt1 = self::$pdo->prepare("SELECT COUNT(*) FROM $this->table WHERE $column = :value");
-        $stmt1->execute(['value' => $value]);
+        $result=$stmt1->execute(['value' => $value]);
         $count = $stmt1->fetchColumn();
 
+        if(!$result){
+            return false;
+        }
+        return [$stmt->fetchAll(PDO::FETCH_ASSOC), $count];
+    }
+
+
+    public function getByLike($column, $value, $lim = 1, $offs = 0){
+        $stmt = self::$pdo->prepare("SELECT * FROM $this->table WHERE $column LIKE :value LIMIT $lim OFFSET $offs");
+        $stmt->execute(['value'=> $value]);
+        $stmt1 = self::$pdo->prepare("SELECT COUNT(*) FROM $this->table WHERE $column LIKE :value");
+        $result=$stmt1->execute(['value'=> $value]);
+        $count = $stmt1->fetchColumn();
+        
+        if(!$result){
+            return false;
+        }
         return [$stmt->fetchAll(PDO::FETCH_ASSOC), $count];
     }
 
@@ -67,14 +89,17 @@ abstract class BaseModel{
             JOIN {$join['table']} ON $this->table.$column = {$join['table']}." . $join['column'] . 
             " WHERE $this->table.$column = :value"
         );
-        $stmt->execute(['value' => $value]);
+        $result = $stmt->execute(['value' => $value]);
 
+        if(!$result){
+            return false;
+        }
         return $stmt->fetchAll(PDO::FETCH_ASSOC); 
     }
 
     public function deleteByID($id){
         $stmt = self::$pdo->prepare("DELETE FROM $this->table WHERE id = :id");
-        $stmt->execute(['id' => $id]);
+        return $stmt->execute(['id' => $id]);
     }
 
     /**
@@ -100,9 +125,7 @@ abstract class BaseModel{
                                 "INSERT INTO $this->table (".implode(",",$fields).") 
                                 VALUES (".implode(",",$marks).")");
 
-        $stmt->execute($values);
-
-        return self::$pdo->lastInsertId();
+        return $stmt->execute($values);
     }
     /**
      * The update method
@@ -130,10 +153,7 @@ abstract class BaseModel{
         WHERE " . implode(' AND ', array_map(function($field){ return $field . ' = ? '; }, $wherefield)));
         
         // Execute statement with values
-        $stmt->execute(array_merge($values, $wherevalue));
-
-        // Return last inserted ID.
-        return self::$pdo->lastInsertId();
+        return $stmt->execute(array_merge($values, $wherevalue));
     }
 }
 ?> 

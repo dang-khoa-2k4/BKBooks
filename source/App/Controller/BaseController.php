@@ -42,6 +42,18 @@ class BaseController
             }
         }  
     }
+    protected function generateResponse($status, $message, $data = [], $meta = null) {
+        $response = [
+            "status" => $status,
+            "message" => $message,
+            "data" => $data
+        ];
+        if ($meta) {
+            $response['meta'] = $meta;
+        }
+        return json_encode($response);
+    }
+    
 }
 
 ?>
