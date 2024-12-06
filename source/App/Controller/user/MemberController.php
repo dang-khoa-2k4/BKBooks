@@ -97,7 +97,11 @@ class MemberController extends BaseController{
 
                 // start session 
                 // Gọi phương thức đăng nhập trong model
-                parent:: __callModel("login", $data_to_model);
+                parent:: loadModel('Member');
+                $model=new MemberModel();
+                $response= $model->login($data_to_model);
+                
+
             } else {
                 echo json_encode(['error' => 'Username and password are required']);
             }

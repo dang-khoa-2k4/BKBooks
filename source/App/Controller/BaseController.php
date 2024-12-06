@@ -15,7 +15,7 @@ class BaseController
     }
 
     // Phương thức load model
-    private function loadModel($model)
+    protected function loadModel($model)
     {
         require_once 'Model/' . $model . '.php'; // Yêu cầu file model tương ứng
     }
