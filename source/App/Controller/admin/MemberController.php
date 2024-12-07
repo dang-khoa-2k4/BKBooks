@@ -1,29 +1,30 @@
 <?php
+require_once(__DIR__ . '/../BaseController.php');
 
-class CustomerController extends BaseController
+class MemberController extends BaseController
 {
     public function __construct()
     {
-        // Gọi constructor của BaseController và load model 'CustomerModel'
-        parent::__construct('Customer');
+        // Gọi constructor của BaseController và load model 'MemberModel'
+        parent::__construct('Member');
     }
 
-    // Add a new customer
-    public function addCustomer()
+    // Add a new Member
+    public function addMember()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = json_decode(file_get_contents('php://input'), true);
 
             if (isset($data['name'], $data['email'], $data['phone'])) {
-                parent::__callModel('add', $data);
+                parent::__callModel('add', [$data]);
             } else {
                 echo json_encode(['error' => 'Missing data']);
             }
         }
     }
 
-    // Edit an existing customer
-    public function updateCustomer($id)
+    // Edit an existing Member
+    public function updateMember($id)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
             $data = json_decode(file_get_contents('php://input'), true);
@@ -53,27 +54,27 @@ class CustomerController extends BaseController
 }
 
 
-    // Get a single customer by ID
-    public function getCustomer($id)
+    // Get a single Member by ID
+    public function getMember($id)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-            parent::__callModel('getByID', $id);
+            parent::__callModel('getByID', [ 'id' => $id ]);
         }
     }
 
-    // Get all customers
-    public function getAllCustomers()
+    // Get all Members
+    public function getAllMembers()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             parent::__callModel('getAll', []);
         }
     }
 
-    // Delete a customer by ID
-    public function deleteCustomer($id)
+    // Delete a Member by ID
+    public function deleteMember($id)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
-            parent::__callModel('delete', $id);
+            parent::__callModel('delete', [ 'id' => $id ]);
         }
     }
 

@@ -9,10 +9,10 @@ class Router
     public function __construct()
     {
         // Default controller, action, params, and role
-        $this->controller = 'Home'; // Default controller
-        $this->action = 'index'; // Default action
+        $this->controller = 'Book'; // Default controller
+        $this->action = 'getAllbook'; // Default action
         $this->params = [];
-        $this->role = 'guest'; // Default role (guest)
+        $this->role = 'admin'; // Default role (guest)
     }
 
     /**
@@ -26,7 +26,7 @@ class Router
         $this->setActionFromURL($url);
         $this->setParamsFromURL($url);
 
-        if (!$this->checkUserRole() && $this->controller != 'Home') {
+        if ($this->checkUserRole() && $this->controller != 'Home') {
             header('Location: /login');
             exit();
         }
@@ -43,6 +43,8 @@ class Router
         $url = explode('?', $url)[0]; // Remove query string
         $url = rtrim($url, '/'); // Remove trailing slash
         $url = explode('/', $url); // Split by slashes
+        unset($url[0]); // Remove the first empty segment
+        $url = array_values($url); // Re-index the array
         return array_filter($url); // Remove any empty values
     }
 
@@ -75,6 +77,7 @@ class Router
     {
         $controllerName = $this->controller . 'Controller'; // Example: 'Home' -> 'HomeController'
         $controllerFile = 'App/Controller/' . $this->role . '/' . $controllerName . '.php';
+        // echo $controllerFile;
         if ($this->role == 'guest') {
             if ($this->controller == 'Home') {
                 // $controllerFile = 'App/Controller/HomeController.php';
@@ -91,6 +94,7 @@ class Router
                 exit();
             }
             $this->controller = new $controllerName();
+            // print_r($this->action);
             if (method_exists($this->controller, $this->action)) {
                 call_user_func_array([$this->controller, $this->action], $this->params);
             } else {

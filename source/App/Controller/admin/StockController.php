@@ -1,4 +1,5 @@
 <?php
+require_once(__DIR__ . '/../BaseController.php');
 
 class StockController extends BaseController
 {
@@ -16,7 +17,7 @@ class StockController extends BaseController
 
             if (isset($data['book_id'], $data['quantity_in_stock'])) {
                 // Gọi phương thức add trong model
-                parent::__callModel('add', $data);
+                parent::__callModel('add', [$data]);
             } else {
                 echo json_encode(['error' => 'Missing data']);
             }
@@ -57,7 +58,7 @@ class StockController extends BaseController
     {
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             // Gọi phương thức getByID trong model
-            parent::__callModel('getByID', $id);
+            parent::__callModel('getByID', [ 'id' => $id ]);
         }
     }
 
@@ -75,7 +76,7 @@ class StockController extends BaseController
     {
         if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
             // Gọi phương thức delete trong model
-            parent::__callModel('delete', $id);
+            parent::__callModel('delete', [ 'id' => $id ]);
         }
     }
 }

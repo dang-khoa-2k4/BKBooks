@@ -2,9 +2,8 @@
 // Sai đường dẫn
 // require_once '../src/config.php';
 // require_once '../src/Models/UserModel.php';
-
-require_once './App/config.php';
-require_once './App/Model/UserModel.php';
+require_once (__DIR__ . '/../config.php');
+require_once 'BaseModel.php';
 
 class MemberModel extends UserModel{
     private $MemberTable;

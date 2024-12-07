@@ -1,4 +1,5 @@
 <?php
+require_once(__DIR__ . '/../BaseController.php');
 
 class InvoiceController extends BaseController
 {
@@ -16,7 +17,7 @@ class InvoiceController extends BaseController
 
             if (isset($data['customer_id'], $data['book_id'], $data['quantity'], $data['total_price'], $data['status'])) {
                 // Gọi phương thức add trong model
-                parent::__callModel('add', $data);
+                parent::__callModel('add', [$data]);
             } else {
                 echo json_encode(['error' => 'Missing data']);
             }
@@ -59,7 +60,7 @@ class InvoiceController extends BaseController
     {
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             // Gọi phương thức getByID trong model
-            parent::__callModel('getByID', $id);
+            parent::__callModel('getByID', ['id' => $id]);
         }
     }
 
@@ -77,7 +78,7 @@ class InvoiceController extends BaseController
     {
         if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
             // Gọi phương thức delete trong model
-            parent::__callModel('delete', $id);
+            parent::__callModel('delete', ['id' => $id]);
         }
     }
 }

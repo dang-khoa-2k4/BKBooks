@@ -1,4 +1,6 @@
+
 <?php
+require_once(__DIR__ . '/../BaseController.php');
 
 class BookController extends BaseController
 {
@@ -19,7 +21,7 @@ class BookController extends BaseController
     public function getBook($id)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-            parent::__callModel('getByID', $id);
+            parent::__callModel('getById', ['id' => $id]);
         }
     }
 
@@ -30,8 +32,7 @@ class BookController extends BaseController
             $data = json_decode(file_get_contents('php://input'), true);
 
             if (isset($data['name'], $data['author'], $data['price'])) {
-
-                parent::__callModel('add', $data);
+                parent::__callModel('add', [$data]);
             } else {
                 echo json_encode(['error' => 'Missing data']);
             }
