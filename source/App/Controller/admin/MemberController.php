@@ -15,7 +15,7 @@ class MemberController extends BaseController
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = json_decode(file_get_contents('php://input'), true);
 
-            if (isset($data['name'], $data['email'], $data['phone'])) {
+            if (isset($data['FirstName'], $data['email'], $data['phone'])) {
                 parent::__callModel('add', [$data]);
             } else {
                 echo json_encode(['error' => 'Missing data']);
@@ -33,11 +33,12 @@ class MemberController extends BaseController
     
                 // Danh sách các trường cần kiểm tra
                 $fields = array(
-                    'Name',
+                    'FirstName',
+                    'LastName',
                     'UserName',
                     'Password',
                     'Email',
-                    'Phone',
+                    'Phone'
                 );
     
                 foreach ($fields as $field) {
