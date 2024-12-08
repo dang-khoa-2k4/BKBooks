@@ -32,6 +32,11 @@ else if($_SERVER['REQUEST_METHOD']==='GET'&& $_GET['action'] === 'infor'){
 else if($_SERVER['REQUEST_METHOD']==='POST'&&$_GET['action'] === 'updateInfo'){
     $memberController->updateInfo( [
         "firstname" => $_POST['firstname'],
+        "lastname" => $_POST['lastname'],
+        "DOB" => $_POST['DOB'],
+        "phone" => $_POST['phone'],
+        "email" => $_POST['email'],
+        "status" => $_POST['status']
     ], $_POST['id']);
 }
 else if($_SERVER['REQUEST_METHOD'] === 'GET'&&$_GET['action']==='getAllMember'){
@@ -88,5 +93,8 @@ else if($_SERVER['REQUEST_METHOD']=== 'GET'&& $_GET['action'] === "rejectOrder")
 }
 else if($_SERVER['REQUEST_METHOD']=== 'GET'&& $_GET['action'] === "cancelOrder"){
     $orderController->cancelOrder($_GET["orderID"]);
+}
+else if($_SERVER['REQUEST_METHOD']=== 'GET'&& $_GET['action'] === "setStatus"){
+    $memberController->setStatus($_GET["userID"], $_GET["memberID"], $_GET["status"]);
 }
 ?>

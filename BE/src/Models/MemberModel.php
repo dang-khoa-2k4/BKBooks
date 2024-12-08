@@ -234,4 +234,27 @@ class MemberModel extends UserModel{
             return [false, $msg];
         }
     }
+
+    /**
+     * Summary of updateStatus: Use for admin to update status of member
+     * @param mixed $userID
+     * @param mixed $memberID
+     * @param mixed $status
+     * @return array
+     */
+    public function updateStatus($userID, $memberID, $status){  
+        try{
+            $stmt = self::$pdo->prepare("UPDATE $this->MemberTable SET status = :status WHERE id = :id");
+            $stmt->execute(['status' => $status, 'id' => $memberID]);
+
+            $stmt1 = self::$pdo->prepare('INSERT INTO modify (userID, memberID, action) VALUES (:userID, :memberID, :status)');
+            $stmt1->execute(['userID'=> $userID,"memberID"=> $memberID, "status"=> $status]);
+            $msg = "Update status successfully";
+            return [true, $msg];
+        }
+        catch(PDOException $e){
+            $msg = "Update status failed";
+            return [false, $msg];
+        }
+    }
 }

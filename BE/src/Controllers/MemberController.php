@@ -137,4 +137,13 @@ class MemberController{
             "message"=> $msg,
         ]);
     }
+
+    public function setStatus($userID, $memberID, $status){
+        [$result, $msg] = $this->memberModel->updateStatus($userID, $memberID, $status);
+        header("Content-Type: application/json");
+        echo json_encode([
+            "status"=> $result ? "success":"fail",
+            "message"=> $msg,
+        ]);
+    }
 }
