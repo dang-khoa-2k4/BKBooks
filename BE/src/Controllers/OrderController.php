@@ -8,12 +8,13 @@ class OrderController{
     }
 
     public function createOrder($data){
-        [$result, $msg] = $order = $this->orderModel->addOrder($data);
+        [$result, $msg, $failBook] = $order = $this->orderModel->addOrder($data);
 
         header('Content-Type: application/json');
         echo json_encode([
             "status" => $result ? "success" : "fail",
-            "msg"=> $msg
+            "msg"=> $msg,
+            "failBook" => $failBook
         ]);
     }
 

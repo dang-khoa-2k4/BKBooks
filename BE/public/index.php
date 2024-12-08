@@ -31,6 +31,9 @@ switch ($requestMethod) {
         } elseif (preg_match('/\/users$/', $requestPath)) {
             require_once '../src/Routes/UserRoute.php'; // Nếu URI là /users thì xử lý bằng userRoutes
         }
+        elseif(preg_match('/\/comments$/', $requestPath)){
+            require_once '../src/Routes/CommentRoute.php'; // Nếu URI là /users thì xử lý bằng userRoutes
+        }
         else {
             echo json_encode(['message' => 'Route not found']);
         }
@@ -43,6 +46,9 @@ switch ($requestMethod) {
         }
         elseif(preg_match('/\/users$/', $requestPath)){
             require_once '../src/Routes/UserRoute.php'; // Nếu URI là /users thì xử lý bằng userRoutes
+        }
+        elseif(preg_match('/\/comments$/', $requestPath)){
+            require_once '../src/Routes/CommentRoute.php'; // Nếu URI là /users thì xử lý bằng userRoutes
         }
         else{
             echo json_encode(['message' => 'Route not found']);

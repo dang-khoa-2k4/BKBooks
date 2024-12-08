@@ -23,13 +23,14 @@ class OrderModel extends BaseModel{
      *       }
      *   ]
      * }
+     * return [$result, $msg, $failBook]
      */
     public function addOrder($data){
         try{
             $stmt = self::$pdo->prepare("INSERT INTO `$this->table` (memberID, deliveryAddress) VALUES (:memberID, :deliveryAddress)");
             $result = $stmt->execute(["memberID"=> $data["memberID"], "deliveryAddress"=> $data["deliveryAddress"]]);
             $last_id = self::$pdo->lastInsertId();
-
+            $failBook = [];
             $empty = true;
             foreach($data["bookList"] as $book){
                 $stmt = self::$pdo->prepare("SELECT * from cart where memberID = :memberID and bookID = :bookID and quantity = :quantity");
@@ -40,20 +41,23 @@ class OrderModel extends BaseModel{
                     $result = $stmt->execute(["orderID"=> $last_id, "bookID"=> $book["bookID"], "quantity"=> $book["quantity"]]);
                     $empty = false;
                 }
+                else{
+                    $failBook[] = $book;
+                }
             }
             if($empty){
                 $stmt = self::$pdo->prepare("DELETE FROM `$this->table` WHERE ID = :ID");
                 $stmt->execute(["ID"=> $last_id]);
                 $msg = "Add order failed because all book is not available";
-                return [false, $msg];
+                return [false, $msg, $failBook];
             }
             $msg = "Add order successfully";
-            return [true, $msg];
+            return [true, $msg, $failBook];
         }
         catch(Exception $e){
             echo $e->getMessage();
             $msg = "Add order failed";
-            return [false, $msg];
+            return [false, $msg, []];
         }
     }
 
