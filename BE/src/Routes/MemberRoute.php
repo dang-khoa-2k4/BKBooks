@@ -1,8 +1,11 @@
 <?php
 require_once '../src/Controllers/MemberController.php';
 require_once '../src/Controllers/CartController.php';
+require_once '../src/Controllers/OrderController.php';
+
 $memberController = new MemberController();
 $cartController = new CartController();
+$orderController = new OrderController();
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_GET['action'] === 'register') {
     $memberController->register([
         'username' => $_POST['username'],
@@ -60,5 +63,30 @@ else if($_SERVER['REQUEST_METHOD'] ==="POST"&& $_GET["action"]=== "updateQuantit
 }
 else if($_SERVER['REQUEST_METHOD'] ==="POST"&& $_GET["action"]=== "deleteBookInCart"){
     $cartController->deleteBookInCart($_POST['memberID'], $_POST['bookID'] ? explode(',',$_POST['bookID']): $_POST['bookID']);
+}
+else if($_SERVER['REQUEST_METHOD'] === "POST"&&$_GET["action"]==="createOrder"){
+    $data = json_decode(file_get_contents('php://input'), true);
+    // echo json_encode($data);    
+    $orderController->createOrder([
+        "memberID"=> $data['memberID'],
+        "deliveryAddress"=> $data['deliveryAddress'],
+        "bookList"=> $data['bookList']
+    ]);
+
+}
+else if($_SERVER['REQUEST_METHOD']=== 'GET'&& $_GET['action'] === "getBookInOrder"){
+    $orderController->getBookInOrder($_GET['orderID'], $_GET['page'], $_GET['perPage']);
+}
+else if($_SERVER['REQUEST_METHOD']=== 'GET'&& $_GET['action'] === "getAllOrder"){
+    $orderController->getAllOrder($_GET["page"], $_GET["perPage"], $_GET["memberID"], $_GET["bookID"], $_GET["status"]);
+}
+else if($_SERVER['REQUEST_METHOD']=== 'GET'&& $_GET['action'] === "acceptOrder"){
+    $orderController->acceptOrder($_GET["orderID"]);
+}
+else if($_SERVER['REQUEST_METHOD']=== 'GET'&& $_GET['action'] === "rejectOrder"){
+    $orderController->rejectOrder($_GET["orderID"]);
+}
+else if($_SERVER['REQUEST_METHOD']=== 'GET'&& $_GET['action'] === "cancelOrder"){
+    $orderController->cancelOrder($_GET["orderID"]);
 }
 ?>

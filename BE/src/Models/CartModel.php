@@ -18,7 +18,14 @@ class CartModel extends BaseModel{
      */
     public function addToCart($data){
         try{
-            $result = $this->insert($data);
+            $stmt = self::$pdo->prepare("
+                    INSERT INTO cart (memberID, bookID, quantity) 
+                    VALUES (:memberID, :bookID, :quantity) 
+                    ON DUPLICATE KEY UPDATE quantity = :quantity
+                ");
+            $result = $stmt->execute(['memberID' => $data['memberid'], 'bookID' => $data["bookid"], 'quantity' => $data["quantity"]]);
+
+            // $result = $this->insert($data);
             if($result){
                 $msg = 'Add to cart successfully';
                 return [true, $msg];
