@@ -12,7 +12,7 @@ class Router
         $this->controller = 'Book'; // Default controller
         $this->action = 'getAllbook'; // Default action
         $this->params = [];
-        $this->role = 'admin'; // Default role (guest)
+        $this->role = 'user'; // Default role (guest)
     }
 
     /**

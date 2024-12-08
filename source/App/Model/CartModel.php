@@ -14,7 +14,7 @@ class CartModel extends BaseModel{
      * Summary of addToCart
      * @param mixed $data
      * @return [$result, $msg]
-     * $data = ["member_id"=> $member_id, "book_id"=> $book_id, "quantity"=> $quantity]
+     * $data = ["memberID"=> $member_id, "bookid"=> $book_id, "quantity"=> $quantity]
      */
     public function addToCart($data){
         try{

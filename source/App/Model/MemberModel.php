@@ -4,7 +4,7 @@
 // require_once '../src/Models/UserModel.php';
 require_once (__DIR__ . '/../config.php');
 require_once 'BaseModel.php';
-
+require_once ('UserModel.php');
 class MemberModel extends UserModel{
     private $MemberTable;
     private $MemberRows;

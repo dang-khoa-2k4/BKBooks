@@ -27,16 +27,17 @@ class BaseController
         // $this->respondJson(['error' => 'Method not found']);
         $callMethod = strtolower($method) . $this->model; // Example: 'get' -> 'getCustomer'
         $callModel = $this->model_instance;
-        // print_r($params) ;
+        
         if (method_exists($callModel, $callMethod)) {
             $response = call_user_func_array([$callModel, $callMethod], $params);
+            print_r($response) ;
             if ($method === 'add' || $method === 'update' || $method === 'delete') {
                 if ($response[0] == true) {
                     echo json_encode(value: ['success' => 'Record ' . $callMethod . ' successfully']);
                 } else {
                     echo json_encode(['error' => $response[1]]);
                 }
-            } else if ($method === 'getAll' || $method === 'getByID') {
+            } else if ($method === 'getAll' || $method === 'getId') {
                 if ($response[0] == true) {
                     echo json_encode($response[2]);
                 } else {

@@ -1,8 +1,9 @@
 <?php
+require_once(__DIR__ . '/../BaseController.php');
 class MemberController extends BaseController{
     private $membermodel;
     public function __construct(){
-        $this->loadModel('User');
+        $this->loadModel('UserModel');
         $this->membermodel = new UserModel();
     }
 
@@ -51,15 +52,7 @@ class MemberController extends BaseController{
                     return;
                 }
 
-                // // Kiểm tra tuổi người dùng (ví dụ trên 18 tuổi)
-                // $now = new DateTime();
-                // $age = $now->diff($dobObject)->y;
-                // if ($age < 18) {
-                //     echo $this->generateResponse("false", "You must be at least 18 years old");
-                //     return;
-                // }
-                // kiểm tra nếu cần
-                
+
                 // Dữ liệu hợp lệ, chuẩn bị truyền vào model
                 $data_to_model = [
                     'username' => $username,

@@ -1,9 +1,9 @@
-<?php 
+<?php require_once(__DIR__ . '/../BaseController.php');
 class CartController extends BaseController{
     private $CartModel;
 
     public function __construct(){
-        $this->loadModel('Cart');
+        $this->loadModel('CartModel');
         $this->CartModel= new CartModel();
     }
 
@@ -15,9 +15,12 @@ class CartController extends BaseController{
             }
         
             $member_id = $_SESSION['id'];
+            print_r($member_id);
+
             $jsonData = file_get_contents('php://input');
             $data = json_decode($jsonData, true); // Giải mã JSON thành mảng
-        
+
+
             // Kiểm tra xem $book_id và $quantity có tồn tại trong dữ liệu gửi lên hay không
             if (!isset($data['book_id'], $data['quantity'])) {
                 echo $this->generateResponse('false', 'There is something wrong');
@@ -27,7 +30,7 @@ class CartController extends BaseController{
             // Lấy giá trị từ dữ liệu gửi lên
             $book_id = $data['book_id'];
             $quantity = $data['quantity'];
-        
+            
             // Kiểm tra nếu $book_id và $quantity là số nguyên và không âm
             if (!is_numeric($book_id) || intval($book_id) <= 0) {
                 echo $this->generateResponse('false', 'Invalid book ID');
@@ -45,8 +48,8 @@ class CartController extends BaseController{
         
             // Dữ liệu hợp lệ, chuẩn bị truyền vào model
             $data_to_model = [
-                "member_id" => $member_id,
-                "book_id" => $book_id,
+                "memberID" => $member_id,
+                "bookid" => $book_id,
                 "quantity" => $quantity
             ];
         
@@ -100,8 +103,8 @@ class CartController extends BaseController{
                 "quantity" => $quantity
             ];
             $where=[
-                "member_id"=>$member_id,
-                "book_id"=>$book_id
+                "memberID"=>$member_id,
+                "bookID"=>$book_id
             ];
         
             // Gọi phương thức addToCart trong model để thêm vào giỏ hàng
@@ -148,14 +151,14 @@ class CartController extends BaseController{
             ];
         
             // Gọi phương thức addToCart trong model để thêm vào giỏ hàng
-            [$result, $msg] = $this->CartModel->addToCart($data_to_model);
+            [$result, $msg] = $this->CartModel->deleteBook($member_id, [$book_id]);
             echo $this->generateResponse($result ? "true" : "false", $msg);
         } else {
             echo $this->generateResponse("false", "Invalid request method");
         }
         
     }
-
+    // xem lại hàm delete:)) lỡ ngu xóa mất tài khoản như chơi
     public function GetallBookCart(){
         if($_SERVER['REQUEST_METHOD']==='GET'){
             if (!isset($_SESSION['id'])) {
