@@ -36,7 +36,7 @@ class BaseController
                 } else {
                     echo json_encode(['error' => $response[1]]);
                 }
-            } else if ($method === 'getAll' || $method === 'getByID') {
+            } else if ($method === 'getAll' || $method === 'getById') {
                 if ($response[0] == true) {
                     echo json_encode($response[2]);
                 } else {

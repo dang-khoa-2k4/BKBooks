@@ -64,7 +64,7 @@ class MemberController extends BaseController
     }
 
     // Get all Members
-    public function getAllMembers()
+    public function getAllMember()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             parent::__callModel('getAll', []);
