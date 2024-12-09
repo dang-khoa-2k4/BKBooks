@@ -1,6 +1,6 @@
 <?php 
-require_once (__DIR__ . '/../config.php');
-require_once 'BaseModel.php';
+    require_once '../src/Models/BaseModel.php';
+    require_once '../src/config.php';
 
 class CartModel extends BaseModel{
     public function __construct(){
@@ -14,11 +14,18 @@ class CartModel extends BaseModel{
      * Summary of addToCart
      * @param mixed $data
      * @return [$result, $msg]
-     * $data = ["memberID"=> $member_id, "bookid"=> $book_id, "quantity"=> $quantity]
+     * $data = ["member_id"=> $member_id, "book_id"=> $book_id, "quantity"=> $quantity]
      */
     public function addToCart($data){
         try{
-            $result = $this->insert($data);
+            $stmt = self::$pdo->prepare("
+                    INSERT INTO cart (memberID, bookID, quantity) 
+                    VALUES (:memberID, :bookID, :quantity) 
+                    ON DUPLICATE KEY UPDATE quantity = :quantity
+                ");
+            $result = $stmt->execute(['memberID' => $data['memberid'], 'bookID' => $data["bookid"], 'quantity' => $data["quantity"]]);
+
+            // $result = $this->insert($data);
             if($result){
                 $msg = 'Add to cart successfully';
                 return [true, $msg];
