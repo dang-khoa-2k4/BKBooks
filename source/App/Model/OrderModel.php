@@ -127,7 +127,7 @@ class OrderModel extends BaseModel{
             $whereClause = count($conditions) > 0 ? "WHERE " . implode(" AND ", $conditions) : "";
             
             
-            // Chuẩn bị câu lệnh SQL chính
+            // Chuẩn bị câu lệnh SQL chínhgit
             $stmt = self::$pdo->prepare("
                 SELECT o.id as orderID, username, o.time_created, o.status, o.deliveryAddress, 
                        (SELECT SUM(b.price * c.Quantity) 
