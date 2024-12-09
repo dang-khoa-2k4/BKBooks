@@ -9,47 +9,17 @@ class OrderController extends BaseController
         parent::__construct('Order');
     }
 
-    // Add a new Order
-    public function addOrder()
-    {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $data = json_decode(file_get_contents('php://input'), true);
-
-            if (isset($data['MemberId'], $data['DeliveryAddress'], $data['Status'])) {
-                // Gọi phương thức add trong model
-                parent::__callModel('add', [$data]);
-            } else {
-                echo json_encode(['error' => 'Missing data']);
-            }
-        }
-    }
-
     // Edit an existing Order
-    public function updateOrder($id)
+    public function updateOrder($id, $state)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
-            $data = json_decode(file_get_contents('php://input'), true);
 
-            $updateData = array();
-
-            // Danh sách các trường cần kiểm tra
-            $fields = array(
-                'MemberId',
-                'DeliveryAddress',
-                'Status'
-            );
-
-            foreach ($fields as $field) {
-                if (isset($data[$field]) && $data[$field] !== '') {
-                    $updateData[$field] = $data[$field];
-                }
-            }
-
-            if (!empty($updateData)) {
+            if ($state == 0) {
                 // Gọi phương thức update trong model
-                parent::__callModel('update', [$updateData, ['id' => $id]]);
-            } else {
-                echo json_encode(['error' => 'Missing data']);
+                parent::__callModel('reject', ['id' => $id]);
+            } else if ($state == 1) {
+                // Gọi phương thức update trong model
+                parent::__callModel('accept', ['id' => $id]);
             }
         }
     }
@@ -64,11 +34,11 @@ class OrderController extends BaseController
     }
 
     // Get all Orders
-    public function getAllOrder()
+    public function getAllOrder($page, $perPage)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             // Gọi phương thức getAll trong model
-            parent::__callModel('getAll', []);
+            parent::__callModel('getAll', [$page, $perPage]);
         }
     }
 }

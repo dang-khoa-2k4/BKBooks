@@ -15,8 +15,8 @@ class MemberController extends BaseController
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = json_decode(file_get_contents('php://input'), true);
 
-            if (isset($data['FirstName'], $data['email'], $data['phone'])) {
-                parent::__callModel('add', [$data]);
+            if (isset($data['UserName'], $data['Email'], $data['Phone'], $data['Password'])) {
+                parent::__callModel('register', [$data]);
             } else {
                 echo json_encode(['error' => 'Missing data']);
             }
@@ -33,12 +33,13 @@ class MemberController extends BaseController
     
                 // Danh sách các trường cần kiểm tra
                 $fields = array(
-                    'FirstName',
-                    'LastName',
-                    'UserName',
-                    'Password',
-                    'Email',
-                    'Phone'
+                    'firstname',
+                    'lastname',
+                    'DOB',
+                    'username',
+                    'password',
+                    'email',
+                    'phone'
                 );
     
                 foreach ($fields as $field) {
@@ -59,15 +60,15 @@ class MemberController extends BaseController
     public function getMember($id)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-            parent::__callModel('getByID', [ 'id' => $id ]);
+            parent::__callModel('getById', [ 'id' => $id ]);
         }
     }
 
     // Get all Members
-    public function getAllMember()
+    public function getAllMember($page, $perPage)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-            parent::__callModel('getAll', []);
+            parent::__callModel('getAll', [$page, $perPage]);
         }
     }
 

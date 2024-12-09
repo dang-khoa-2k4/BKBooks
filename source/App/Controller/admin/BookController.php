@@ -10,10 +10,10 @@ class BookController extends BaseController
     }
 
     // API: Get all books
-    public function getAllBook()
+    public function getAllBook($page, $perPage)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-            parent::__callModel('getAll', []);
+            parent::__callModel('getAll', [$page, $perPage]);
         }
     }
 

@@ -21,7 +21,7 @@ class MemberModel extends UserModel{
      * @return [$result, $msg]
      * $data = [$username, $password, $firstname, $lastname, $DOB, $phone, $email]
      */
-    public function register($data){
+    public function registerMember($data){
     try{
         $stmt = self::$pdo->prepare("SELECT * FROM $this->table WHERE username = :username");
         $stmt->execute(['username' => $data['username']]);
@@ -115,7 +115,7 @@ class MemberModel extends UserModel{
      * 
      *
      */
-    public function updateInfor($data,$id){
+    public function updateMember($data,$id){
         try{
             // Fields to be added.
             $fields = array_keys($data);
@@ -188,7 +188,7 @@ class MemberModel extends UserModel{
      * @param  $id
      * @return [$result, $msg, $member]
      */
-    public function getMemberById($id){
+    public function getByIdMember($id){
         try{
             $stmt = self::$pdo->prepare("SELECT * FROM $this->MemberTable JOIN user ON $this->MemberTable.id = $this->table.id WHERE $this->MemberTable.id = :id");
             $resutl = $stmt->execute(["id"=> $id]);

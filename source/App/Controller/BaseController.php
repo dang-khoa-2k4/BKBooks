@@ -30,7 +30,7 @@ class BaseController
         
         if (method_exists($callModel, $callMethod)) {
             $response = call_user_func_array([$callModel, $callMethod], $params);
-            print_r($response) ;
+            header('Content-Type: application/json');
             if ($method === 'add' || $method === 'update' || $method === 'delete') {
                 if ($response[0] == true) {
                     echo json_encode(value: ['success' => 'Record ' . $callMethod . ' successfully']);
@@ -51,6 +51,7 @@ class BaseController
     }
     protected function generateResponse($status, $message, $data = [], $meta = null)
     {
+        header('Content-Type: application/json');
         $response = [
             "status" => $status,
             "message" => $message,
