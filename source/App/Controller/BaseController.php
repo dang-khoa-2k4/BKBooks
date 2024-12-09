@@ -60,6 +60,6 @@ class BaseController
         if ($meta) {
             $response['meta'] = $meta;
         }
-        return json_encode($response);
+        echo json_encode($response);
     }
 }

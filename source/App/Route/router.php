@@ -86,7 +86,7 @@ class Router
                 exit();
             }
         }
-        
+
         if (file_exists($controllerFile)) {
             require_once($controllerFile);
             if (!class_exists($controllerName)) {
