@@ -1,21 +1,21 @@
 <?php
 require_once(__DIR__ . '/../BaseController.php');
 
-class InvoiceController extends BaseController
+class OrderController extends BaseController
 {
     public function __construct()
     {
-        // Gọi constructor của BaseController và load model 'InvoiceModel'
-        parent::__construct('Invoice');
+        // Gọi constructor của BaseController và load model 'OrderModel'
+        parent::__construct('Order');
     }
 
-    // Add a new invoice
-    public function addInvoice()
+    // Add a new Order
+    public function addOrder()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = json_decode(file_get_contents('php://input'), true);
 
-            if (isset($data['customer_id'], $data['book_id'], $data['quantity'], $data['total_price'], $data['status'])) {
+            if (isset($data['MemberId'], $data['DeliveryAddress'], $data['Status'])) {
                 // Gọi phương thức add trong model
                 parent::__callModel('add', [$data]);
             } else {
@@ -24,8 +24,8 @@ class InvoiceController extends BaseController
         }
     }
 
-    // Edit an existing invoice
-    public function updateInvoice($id)
+    // Edit an existing Order
+    public function updateOrder($id)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
             $data = json_decode(file_get_contents('php://input'), true);
@@ -34,9 +34,8 @@ class InvoiceController extends BaseController
 
             // Danh sách các trường cần kiểm tra
             $fields = array(
-                'Id',
-                'Total_Price',
-                'Delivery_Address',
+                'MemberId',
+                'DeliveryAddress',
                 'Status'
             );
 
@@ -55,8 +54,8 @@ class InvoiceController extends BaseController
         }
     }
 
-    // Get a single invoice by ID
-    public function getInvoice($id)
+    // Get a single Order by ID
+    public function getOrder($id)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             // Gọi phương thức getByID trong model
@@ -64,21 +63,12 @@ class InvoiceController extends BaseController
         }
     }
 
-    // Get all invoices
-    public function getAllInvoices()
+    // Get all Orders
+    public function getAllOrder()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             // Gọi phương thức getAll trong model
             parent::__callModel('getAll', []);
-        }
-    }
-
-    // Delete an invoice by ID
-    public function deleteInvoice($id)
-    {
-        if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
-            // Gọi phương thức delete trong model
-            parent::__callModel('delete', ['id' => $id]);
         }
     }
 }

@@ -12,7 +12,7 @@ class Router
         $this->controller = 'Book'; // Default controller
         $this->action = 'getAllbook'; // Default action
         $this->params = [];
-        $this->role = 'user'; // Default role (guest)
+        $this->role = 'admin'; // Default role (guest)
     }
 
     /**
@@ -94,7 +94,6 @@ class Router
                 exit();
             }
             $this->controller = new $controllerName();
-            // print_r($this->action);
             if (method_exists($this->controller, $this->action)) {
                 call_user_func_array([$this->controller, $this->action], $this->params);
             } else {
