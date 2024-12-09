@@ -31,7 +31,8 @@ class BookController extends BaseController
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = json_decode(file_get_contents('php://input'), true);
 
-            if (isset($data['name'], $data['author'], $data['price'], $data['quantity'])) {
+            $data['quantity'] = 0;
+            if (isset($data['name'], $data['author'], $data['price'])) {
                 parent::__callModel('add', [$data]);
             } else {
                 echo json_encode(['error' => 'Missing data']);

@@ -6,7 +6,7 @@ class StockController extends BaseController
     public function __construct()
     {
         // Gọi constructor của BaseController và load model 'StockModel'
-        parent::__construct('Stock');
+        parent::__construct('Book');
     }
 
     // Add a new stock entry
@@ -15,7 +15,7 @@ class StockController extends BaseController
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = json_decode(file_get_contents('php://input'), true);
 
-            if (isset($data['book_id'], $data['quantity_in_stock'])) {
+            if (isset($data['Id'], $data['Quantity'])) {
                 // Gọi phương thức add trong model
                 parent::__callModel('add', [$data]);
             } else {
@@ -34,7 +34,6 @@ class StockController extends BaseController
 
             // Danh sách các trường cần kiểm tra
             $fields = array(
-                'Id',
                 'Quantity'
             );
 
