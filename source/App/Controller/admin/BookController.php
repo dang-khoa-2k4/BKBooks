@@ -21,7 +21,7 @@ class BookController extends BaseController
     public function getBook($id)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-            parent::__callModel('getById', ['id' => $id]);
+            parent::__callModel('getById', [$id]);
         }
     }
 
@@ -78,7 +78,7 @@ class BookController extends BaseController
     public function deleteBook($id)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
-            parent::__callModel('delete', ['id' => $id]);
+            parent::__callModel('delete', [$id]);
         }
     }
 }

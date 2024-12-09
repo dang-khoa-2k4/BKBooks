@@ -16,10 +16,10 @@ class OrderController extends BaseController
 
             if ($state == 0) {
                 // Gọi phương thức update trong model
-                parent::__callModel('reject', ['id' => $id]);
+                parent::__callModel('reject', [$id]);
             } else if ($state == 1) {
                 // Gọi phương thức update trong model
-                parent::__callModel('accept', ['id' => $id]);
+                parent::__callModel('accept', [$id]);
             }
         }
     }
@@ -29,7 +29,7 @@ class OrderController extends BaseController
     {
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             // Gọi phương thức getByID trong model
-            parent::__callModel('getByID', ['id' => $id]);
+            parent::__callModel('getByID', [$id]);
         }
     }
 

@@ -49,7 +49,7 @@ class MemberController extends BaseController
                 }
 
                 if (!empty($updateData)) 
-                    parent::__callModel('update', [$updateData, ['id' => $id]]);
+                    parent::__callModel('update', [$updateData, $id]);
             } else {
                 echo json_encode(['error' => 'Missing data']);
         }
@@ -60,7 +60,7 @@ class MemberController extends BaseController
     public function getMember($id)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-            parent::__callModel('getById', [ 'id' => $id ]);
+            parent::__callModel('getById', [ $id ]);
         }
     }
 
@@ -76,7 +76,7 @@ class MemberController extends BaseController
     public function deleteMember($id)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
-            parent::__callModel('delete', [ 'id' => $id ]);
+            parent::__callModel('delete', [ $id ]);
         }
     }
 

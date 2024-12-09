@@ -26,18 +26,57 @@ class BookModel extends BaseModel{
      * $result = true if success, false if fail
      * $msg = message
      */
+    // public function getAllBooks($page, $perPage){
+    // try{
+    //     $result = $this->getAll($perPage, ($page - 1) * $perPage);
+    //     //$result if have data: [$book, $count] else false
+    //     if(!$result){//fail
+    //         return [false, 'Get all books failed', []];
+    //     }
+    //     else{
+    //         return [true, 'Get all books successfully', $result];
+    //     }
+    //     }catch(PDOException $e){
+    //         // $msg = $e->getMessage();
+    //         $msg = "Get all books failed";
+    //         return [false, $msg, []];
+    //     }
+    // }
+
     public function getAllBook($page, $perPage){
-    try{
-        $result = $this->getAll($perPage, ($page - 1) * $perPage);
-        //$result if have data: [$book, $count] else false
-        if(!$result){//fail
-            return [false, 'Get all books failed', []];
-        }
-        else{
-            return [true, 'Get all books successfully', $result];
-        }
-        }catch(PDOException $e){
-            // $msg = $e->getMessage();
+        try{
+            $lim = $perPage;
+            $offset = ($page - 1) * $perPage;
+
+            $stmt = self::$pdo->prepare("
+                SELECT b.*, 
+                    IFNULL(SUM(CASE WHEN o.Status = 'Accepted' THEN c.Quantity ELSE 0 END), 0) AS soldQuantity,
+                    IFNULL(SUM(CASE WHEN o.Status = 'Pending' THEN c.Quantity ELSE 0 END), 0) AS onOrderQuantity
+                FROM book b
+                LEFT JOIN contain c ON b.id = c.BookID
+                LEFT JOIN `order` o ON c.OrderID = o.ID
+                GROUP BY b.id
+                LIMIT $lim OFFSET $offset
+            ");
+
+            $stmt->execute();
+            $books = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            $stmt1 = self::$pdo->prepare("
+                SELECT COUNT(*) 
+                FROM book
+            ");
+            $stmt1->execute();
+            $count = $stmt1->fetchColumn();
+
+            if ($books) {
+                $msg = 'Get all books successfully';
+                return [true, $msg, [$books, $count]];
+            } else {
+                $msg = 'Get all books failed';
+                return [false, $msg, []];
+            }
+        } catch (PDOException $e) {
             $msg = "Get all books failed";
             return [false, $msg, []];
         }
@@ -51,7 +90,7 @@ class BookModel extends BaseModel{
      * $msg: message
      * $book: book if success
      */
-    public function getByIdBook($id){
+    public function getBookById($id){
     try{
         $result = $this->getBy('id', $id);
 
@@ -81,7 +120,7 @@ class BookModel extends BaseModel{
      * $result = true if success, false if fail
      * $msg = message
      */
-    public function getByGenreBook($genre, $page, $perPage){
+    public function getBookByGenre($genre, $page, $perPage){
     try{
         $result = $this->getByLike('genre', "%$genre%", $perPage, ($page - 1)* $perPage);
         if(!$result){
@@ -111,7 +150,7 @@ class BookModel extends BaseModel{
      * $count = number of books
      * $result = true if success, false if fail
      */
-    public function getByAuthorBook($author, $page, $perPage){
+    public function getBookByAuthor($author, $page, $perPage){
     try{
         $result = $this->getByLike('author', "%$author%", $perPage, ($page - 1)* $perPage);
         if(!$result){
@@ -186,5 +225,50 @@ class BookModel extends BaseModel{
         return [false, $msg, []];
     }
 }
+
+    public function addStockBook($quantity, $id){
+        try{
+            $stmt = self::$pdo->prepare("UPDATE $this->table SET quantity = quantity + :quantity WHERE id = :id");
+            $result = $stmt->execute(["quantity"=> $quantity,"id"=> $id]);
+            if(!$result){
+                $msg = "Add quantity failed";
+                return [false, $msg];
+            }
+            else{
+                $msg = "Add quantity successfully";
+                return [true, $msg];
+            }
+        }
+        catch(Exception $e){
+            $msg = "Add quantity failed";
+            return [false, $msg];
+        }
+    }
+
+    public function getAllStockBook($page, $perPage){
+        try{
+            $lim = $perPage;
+            $offset = ($page -1) * $perPage;
+            $stmt = self::$pdo->prepare("SELECT * FROM $this->table WHERE quantity > 0 LIMIT $lim OFFSET $offset");
+            $result = $stmt->execute();
+
+            $stmt1 = self::$pdo->prepare("SELECT COUNT(*) FROM $this->table WHERE quantity > 0");
+            $result1 = $stmt1->execute();
+            $count = $stmt1->fetchColumn();
+            if(!$result){
+                $msg = "Get all book in stock failed";
+                return [false, $msg,[]];
+            }
+            else{
+                $msg = "Get all book in stock successfully";
+                return [true, $msg, [$stmt->fetchAll(PDO::FETCH_ASSOC), $count]];
+            }
+        }
+        catch(Exception $e){
+            $msg = "Get all book in stock failed";
+            return [false, $msg, []];
+        }
+    }
 }
+
 ?>
