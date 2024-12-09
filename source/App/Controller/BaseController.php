@@ -4,6 +4,8 @@ class BaseController
 {
     protected $model_instance;  // Instance of the model
     protected $model;  // Model name
+    protected $no_response_method = ['add', 'update', 'delete', 'register', 'reject', 'accept', 'addStock'];
+    protected $response_method = ['getAll', 'getById', 'getAllStock'];
 
     // Constructor, khi kế thừa sẽ gọi constructor của lớp con và load model
     public function __construct($modelName)
@@ -31,13 +33,13 @@ class BaseController
         if (method_exists($callModel, $callMethod)) {
             $response = call_user_func_array([$callModel, $callMethod], $params);
             header('Content-Type: application/json');
-            if ($method === 'add' || $method === 'update' || $method === 'delete') {
+            if (in_array($method, $this->no_response_method)) {
                 if ($response[0] == true) {
                     echo json_encode(value: ['success' => 'Record ' . $callMethod . ' successfully']);
                 } else {
                     echo json_encode(['error' => $response[1]]);
                 }
-            } else if ($method === 'getAll' || $method === 'getById') {
+            } else if (in_array($method, $this->response_method)) {
                 if ($response[0] == true) {
                     echo json_encode($response[2]);
                 } else {

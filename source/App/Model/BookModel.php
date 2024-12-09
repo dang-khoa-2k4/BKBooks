@@ -90,7 +90,7 @@ class BookModel extends BaseModel{
      * $msg: message
      * $book: book if success
      */
-    public function getBookById($id){
+    public function getByIdBook($id){
     try{
         $result = $this->getBy('id', $id);
 
@@ -173,6 +173,7 @@ class BookModel extends BaseModel{
      */
     public function addBook($data){
     try{
+        $data['quantity'] = 0;
         $result = $this->insert($data);
         if(!$result){
             return [false, 'Add book failed', []];

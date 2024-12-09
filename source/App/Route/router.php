@@ -45,7 +45,7 @@ class Router
         $url = explode('/', $url); // Split by slashes
         unset($url[0]); // Remove the first empty segment
         $url = array_values($url); // Re-index the array
-        return array_filter($url); // Remove any empty values
+        return $url; // Remove any empty values
     }
 
     /**
@@ -86,7 +86,6 @@ class Router
                 exit();
             }
         }
-
         if (file_exists($controllerFile)) {
             require_once($controllerFile);
             if (!class_exists($controllerName)) {
@@ -114,7 +113,6 @@ class Router
         if (!empty($url[1])) {
             $this->action = $url[1] . ucfirst($this->controller); // Concatenate action with controller (e.g, addCustomer)')
         }
-        
     }
 
     /**

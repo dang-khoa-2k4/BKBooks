@@ -23,6 +23,7 @@ class MemberModel extends UserModel{
      */
     public function registerMember($data){
     try{
+        // print_r($data);
         $stmt = self::$pdo->prepare("SELECT * FROM $this->table WHERE username = :username");
         $stmt->execute(['username' => $data['username']]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -32,7 +33,7 @@ class MemberModel extends UserModel{
             return [false, $msg];
         }
 
-
+        
         //check email exist
         $stmt = self::$pdo->prepare("SELECT * FROM $this->MemberTable WHERE email = :email");
         $stmt->execute(['email' => $data['email']]);
@@ -42,7 +43,7 @@ class MemberModel extends UserModel{
             $msg = "Email already exists";
             return [false, $msg];
         }
-
+        
         $stmt = self::$pdo->prepare("INSERT INTO $this->table (username, password, role) VALUES (:username, :password, :role)");
         $result = $stmt->execute([
             'username' => $data['username'],
@@ -54,7 +55,7 @@ class MemberModel extends UserModel{
             $msg = 'Register failed';
             return [false, $msg];
         }
-
+        
         $lastId = self::$pdo->lastInsertId();
 
         $stmt = self::$pdo->prepare("INSERT INTO $this->MemberTable (id,firstname, lastname, DOB, phone, email, status) VALUES (:id,:firstname, :lastname, :DOB, :phone, :email, :status)");
@@ -67,12 +68,12 @@ class MemberModel extends UserModel{
             'email' => $data['email'],
             'status' => 'active'
         ]);
-
+        
         if(!$result){
             $msg = 'Register failed';
             return [false, $msg];
         }
-
+        
         $msg = 'Register successfully';
         return [true, $msg];
 

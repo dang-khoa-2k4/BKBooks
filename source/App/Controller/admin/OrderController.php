@@ -13,7 +13,6 @@ class OrderController extends BaseController
     public function updateOrder($id, $state)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
-
             if ($state == 0) {
                 // Gọi phương thức update trong model
                 parent::__callModel('reject', [$id]);
@@ -24,21 +23,13 @@ class OrderController extends BaseController
         }
     }
 
-    // Get a single Order by ID
-    public function getOrder($id)
-    {
-        if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-            // Gọi phương thức getByID trong model
-            parent::__callModel('getByID', [$id]);
-        }
-    }
-
     // Get all Orders
-    public function getAllOrder($page, $perPage)
+    public function getAllOrder($page, $perPage, $memberId = null, $bookID = null, $state = null)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             // Gọi phương thức getAll trong model
-            parent::__callModel('getAll', [$page, $perPage]);
+            if (isset($page, $perPage))
+                parent::__callModel('getAll', [$page, $perPage, $memberId, $bookID, $state]);
         }
     }
 }
