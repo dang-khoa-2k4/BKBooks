@@ -1,6 +1,6 @@
 <?php
-require_once (__DIR__ . '/../config.php');
-require_once 'BaseModel.php';
+require_once '../src/config.php';
+require_once '../src/Models/BaseModel.php';
 
 class UserModel extends BaseModel {
     public function __construct() {

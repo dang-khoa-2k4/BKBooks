@@ -1,9 +1,10 @@
 <?php 
+require_once(__DIR__ . '/../BaseController.php');
 class BookController extends BaseController{
     private $bookmodel;
 
     public function __construct(){
-        parent::loadModel('Book'); // Tải model Book
+        parent::loadModel('BookModel'); // Tải model Book
         $this->bookmodel = new BookModel(); // Khởi tạo instance của BookModel
     }
 
@@ -16,12 +17,12 @@ class BookController extends BaseController{
      * Phương thức này yêu cầu các tham số `page` và `perpage` trong URL.
      */
     public function getAllBook(){
+        echo "GetALl";
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $page = isset($_GET['page']) ? (int)$_GET['page'] : 1; // Lấy trang hiện tại, mặc định là trang 1
             $perpage = isset($_GET['perpage']) ? (int)$_GET['perpage'] : 10; // Lấy số sách trên mỗi trang, mặc định là 10 sách
-            
-            [$result, $msg, [$data, $count]] = $this->bookmodel->getAllBooks($page, $perpage);
 
+            [$result, $msg, [$data, $count]] =  $this->bookmodel->getAllBook($page, $perpage);
             if ($result) {
                 $totalPage = ceil($count / $perpage);
                 $meta = [
@@ -49,14 +50,13 @@ class BookController extends BaseController{
     public function getIDBook() {
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $id = isset($_GET['id']) && is_numeric($_GET['id']) ? (int)$_GET['id'] : null; // Kiểm tra ID hợp lệ
-
             if (!$id) {
                 echo json_encode(['error' => 'Invalid ID']); // Nếu ID không hợp lệ, trả về lỗi
                 return;
             }
 
 
-            [$result, $msg, $book] = $this->bookmodel->getBookById($id);
+            [$result, $msg, $book] = $this->bookmodel->getByIdBook($id);
 
             if ($result) {
                 echo $this->generateResponse("true", $msg, [$book]);
@@ -81,10 +81,11 @@ class BookController extends BaseController{
             
             if (!isset($_GET['genre']) || empty($_GET['genre'])) {
                 echo $this->generateResponse("false", "Genre is required", []); // Nếu không có thể loại, trả về lỗi
+                exit;
             }
 
             $genre = $_GET['genre']; // Lấy thể loại từ URL
-            [$result, $msg, [$data, $count]] = $this->bookmodel->getBookByGenre($genre, $page, $perpage);
+            [$result, $msg, [$data, $count]] = $this->bookmodel->getByGenreBook($genre, $page, $perpage);
 
             if ($result) {
 
@@ -118,13 +119,13 @@ class BookController extends BaseController{
             
             if (!isset($_GET['author']) || empty($_GET['author'])) {
                 echo $this->generateResponse("false", "Author is required", []); // Nếu không có tác giả, trả về lỗi
-                return;
+                exit;
             }
 
             $author = $_GET['author']; // Lấy tên tác giả từ URL
 
             // Gọi phương thức getBookByAuthor từ model để lấy danh sách sách theo tác giả
-            [$result, $msg, [$data, $count]] = $this->bookmodel->getBookByAuthor($author, $page, $perpage);
+            [$result, $msg, [$data, $count]] = $this->bookmodel->getByAuthorBook($author, $page, $perpage);
 
             if ($result) {
                 // Tính toán số trang và trả về kết quả

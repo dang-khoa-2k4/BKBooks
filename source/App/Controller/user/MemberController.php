@@ -1,9 +1,10 @@
 <?php
+require_once(__DIR__ . '/../BaseController.php');
 class MemberController extends BaseController {
     private $membermodel;
 
     public function __construct() {
-        $this->loadModel('Member');
+        $this->loadModel('MemberModel');
         $this->membermodel = new MemberModel(); // Fixed typo
     }
         /**
@@ -17,24 +18,27 @@ class MemberController extends BaseController {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Lấy nội dung body của request
             $jsonData = file_get_contents('php://input');
+           // print_r($jsonData);
             $data = json_decode($jsonData, true); // Giải mã JSON thành mảng
 
             // Kiểm tra nếu dữ liệu có tồn tại
-            if (isset($data['username'], 
+            //print_r($data);
+            if (!isset($data['username'], 
                         $data['password'], 
                         $data['email'],
                         $data['phone'],
-                        $data['address'],
                         $data['firstname'],
                         $data['lastname'],
                         $data['DOB'])) {
+                            echo $this->generateResponse("false", "Please provide all information");
+                            exit;
+            }
 
                 // Lọc và làm sạch dữ liệu đầu vào
                 $username = htmlspecialchars(trim($data['username']));
                 $password = htmlspecialchars(trim($data['password']));
                 $email = htmlspecialchars(trim($data['email']));
                 $phone = htmlspecialchars(trim($data['phone']));
-                $address = htmlspecialchars(trim($data['address']));
                 $firstname = htmlspecialchars(trim($data['firstname']));
                 $lastname = htmlspecialchars(trim($data['lastname']));
                 $DOB = htmlspecialchars(trim($data['DOB']));
@@ -55,17 +59,10 @@ class MemberController extends BaseController {
                 $dobObject = DateTime::createFromFormat('Y-m-d', $DOB);
                 if (!$dobObject || $dobObject->format('Y-m-d') !== $DOB) {
                     echo $this->generateResponse("false", "Your Date of birth is wrong");
-                    return;
+                    exit;
                 }
 
-                // // Kiểm tra tuổi người dùng (ví dụ trên 18 tuổi)
-                // $now = new DateTime();
-                // $age = $now->diff($dobObject)->y;
-                // if ($age < 18) {
-                //     echo $this->generateResponse("false", "You must be at least 18 years old");
-                //     return;
-                // }
-                // kiểm tra nếu cần
+
 
                 // Dữ liệu hợp lệ, chuẩn bị truyền vào model
                 $data_to_model = [
@@ -81,9 +78,7 @@ class MemberController extends BaseController {
                 // Gọi phương thức register trong model
                 [$result, $msg] = $this->membermodel->register($data_to_model);
                 echo $this->generateResponse($result ? "true" : "false", $msg);
-            } else {
-                echo $this->generateResponse("false", "Please provide all information");
-            }
+            
         } else {
             echo $this->generateResponse("false", "Invalid request method");
         }
@@ -153,7 +148,7 @@ class MemberController extends BaseController {
                 // Lấy ID từ session (đảm bảo rằng người dùng đã đăng nhập)
                 if (!isset($_SESSION['id'])) {
                     echo $this->generateResponse("false", "You must be logged in to change your password");
-                    return;
+                    exit;
                 }
 
                 $id = $_SESSION['id']; // Lấy ID người dùng từ session
@@ -162,6 +157,8 @@ class MemberController extends BaseController {
 
                 // Kiểm tra nếu mật khẩu mới khác mật khẩu cũ
                 if ($oldPassword === $newPassword) {
+                    print_r($oldPassword );
+                    print_r($newPassword);
                     echo $this->generateResponse("false", "New password must be different from old password");
                     return;
                 }
@@ -220,15 +217,20 @@ class MemberController extends BaseController {
             // Kiểm tra nếu dữ liệu có tồn tại
             if (isset( $data['email'],
                         $data['phone'],
-                        $data['address'],
                         $data['firstname'],
                         $data['lastname'],
                         $data['DOB'])) {
+                if (!isset($_SESSION['id'])) {
+                    echo $this->generateResponse("false", "You must be logged in to change your password");
+                    return;
+                }
+
+                $id = $_SESSION['id']; // Lấy ID người dùng từ session
 
                 // Lọc và làm sạch dữ liệu đầu vào
                 $email = htmlspecialchars(trim($data['email']));
                 $phone = htmlspecialchars(trim($data['phone']));
-                $address = htmlspecialchars(trim($data['address']));
+                //$address = htmlspecialchars(trim($data['address']));
                 $firstname = htmlspecialchars(trim($data['firstname']));
                 $lastname = htmlspecialchars(trim($data['lastname']));
                 $DOB = htmlspecialchars(trim($data['DOB']));
@@ -261,7 +263,7 @@ class MemberController extends BaseController {
                 ];
 
                 // Gọi phương thức register trong model
-                [$result, $msg] = $this->membermodel->register($data_to_model);
+                [$result, $msg] = $this->membermodel->updateInfor($data_to_model, $id);
                 echo $this->generateResponse($result ? "true" : "false", $msg);
             } else {
                 echo $this->generateResponse("false", "Please provide all information");
@@ -274,13 +276,13 @@ class MemberController extends BaseController {
      /**
      * Hủy tài khoản thành viên.
      * Phương thức này cho phép thành viên hủy tài khoản của mình (dựa trên session).
-     * @return string JSON phản hồi với kết quả hủy tài khoản (thành công hoặc thất bại).
+     * @return #string JSON phản hồi với kết quả hủy tài khoản (thành công hoặc thất bại).
      */
     public function deleteMember(){
         if($_SERVER['REQUEST_METHOD']=== 'GET'){
             if (!isset($_SESSION['id'])) {
-                echo $this->generateResponse("false", "You must be logged in to change your password");
-                return;
+                echo $this->generateResponse("false", "You must be logged in to delete the account");
+                exit;
             }
             $id = $_SESSION['id'];
             [$result, $msg]=$this->membermodel->deleteMember($id);

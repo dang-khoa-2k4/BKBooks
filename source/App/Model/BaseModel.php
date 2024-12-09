@@ -118,12 +118,13 @@ abstract class BaseModel{
         $marks = array_fill(0, count($data), "?");
 
         $fields = array_keys($data);
+
         $values = array_values($data);
 
         $stmt = self::$pdo->prepare(
                                 "INSERT INTO $this->table (".implode(",",$fields).") 
                                 VALUES (".implode(",",$marks).")");
-        
+
         return $stmt->execute($values);
     }
     /**
