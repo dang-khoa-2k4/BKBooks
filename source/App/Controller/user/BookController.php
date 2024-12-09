@@ -17,6 +17,10 @@ class BookController extends BaseController{
      * Phương thức này yêu cầu các tham số `page` và `perpage` trong URL.
      */
     public function getAllBook(){
+<<<<<<< HEAD
+=======
+        //echo "GetALl";
+>>>>>>> f0ad4b600fd32841ef6679293145f1889e2f540e
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $page = isset($_GET['page']) ? (int)$_GET['page'] : 1; // Lấy trang hiện tại, mặc định là trang 1
             $perpage = isset($_GET['perpage']) ? (int)$_GET['perpage'] : 10; // Lấy số sách trên mỗi trang, mặc định là 10 sách

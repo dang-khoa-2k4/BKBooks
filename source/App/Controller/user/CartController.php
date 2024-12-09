@@ -15,7 +15,7 @@ class CartController extends BaseController{
             }
         
             $member_id = $_SESSION['id'];
-            print_r($member_id);
+            //print_r($member_id);
 
             $jsonData = file_get_contents('php://input');
             $data = json_decode($jsonData, true); // Giải mã JSON thành mảng
