@@ -117,7 +117,7 @@ class MemberController extends BaseController {
 
                     //set session id and role
                     $_SESSION['id'] = $user['ID'];
-                    $_SESSION['role']= $user['ID'];
+                    $_SESSION['Role']= $user['Role'];
 
 
                     echo $this->generateResponse("true", "Login successfully");
