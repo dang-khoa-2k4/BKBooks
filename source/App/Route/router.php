@@ -14,7 +14,7 @@ class Router
         $this->params = [];
         $this->role = 'admin'; // Default role (guest)
 
-        require_once("/../config.php");
+        require_once(__DIR__ . '/../config.php');
 
         cors();
     }
