@@ -12,11 +12,7 @@ class Router
         $this->controller = 'Book'; // Default controller
         $this->action = 'getAllbook'; // Default action
         $this->params = [];
-        $this->role = 'admin'; // Default role (guest)
-
-        require_once(__DIR__ . '/../config.php');
-
-        cors();
+        $this->role = 'user'; // Default role (guest)
     }
 
     /**
