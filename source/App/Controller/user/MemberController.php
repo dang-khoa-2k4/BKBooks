@@ -263,7 +263,7 @@ class MemberController extends BaseController {
                 ];
 
                 // Gọi phương thức register trong model
-                [$result, $msg] = $this->membermodel->updateInfor($data_to_model, $id);
+                [$result, $msg] = $this->membermodel->updateMember($data_to_model, $id);
                 echo $this->generateResponse($result ? "true" : "false", $msg);
             } else {
                 echo $this->generateResponse("false", "Please provide all information");

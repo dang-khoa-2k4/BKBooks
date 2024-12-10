@@ -133,7 +133,6 @@ class MemberController extends BaseController{
                     return;
                 }
 
-                // Tạo mảng dữ liệu để gửi đến model
                 $data_to_model = [
                     'id' => $id,
                     'oldPassword' => $oldPassword,

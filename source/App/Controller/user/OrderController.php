@@ -77,14 +77,21 @@ class OrderController extends BaseController{
     
 
     public function cancelOrder(){
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             // Kiểm tra nếu người dùng chưa đăng nhập
             if (!isset($_SESSION['id'])) {
                 echo $this->generateResponse('false', 'Please login');
                 exit();
             }
 
-            //?? get orrder ID wwhere 
+            if(!isset($_GET['order_id'])){
+                echo $this->generateResponse('false', 'Invalid order_id');
+                exit;
+            }
+
+            $order_id=$_GET['order_id'];
+            [$result, $msg]= $this->Ordermodel->cancelOrder($order_id);
+            echo $this->generateResponse($result? 'true':'false', $msg);
         }else{
             echo $this->generateResponse('false', 'Invalid request method');
        
@@ -92,8 +99,26 @@ class OrderController extends BaseController{
 
     }
 
-    public function getOrder(){
+    public function getByOrder(){
+        if($_SERVER['REQUEST_METHOD']==='GET'){
+            if (!isset($_SESSION['id'])) {
+                echo $this->generateResponse('false', 'Please login');
+                exit();
+            }
 
+        $status = isset($_GET['status']) ? $_GET['status']: null;
+        $book_id=  isset($_GET['book_id']) ? $_GET['book_id']: null;
+        $member_id= $_SESSION['id'];
+
+
+        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $perpage = isset($_GET['perpage']) ? (int)$_GET['perpage'] : 10;
+
+        [$result, $msg, $order]=$this->Ordermodel->getAllOrder($page, $perpage, $member_id, $book_id, $status );
+        echo $this-> generateResponse($result? "true":"false", $msg, $order);
+        }else{
+            echo $this->generateResponse('false', 'Invalid request method');
+        }
     }
 }
 
