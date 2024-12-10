@@ -117,10 +117,10 @@ class MemberController extends BaseController {
 
                     //set session id and role
                     $_SESSION['id'] = $user['ID'];
-                    $_SESSION['Role']= $user['Role'];
+                    $_SESSION['Role']= $user['role'];
 
 
-                    echo $this->generateResponse("true", "Login successfully");
+                    echo $this->generateResponse("true", "Login successfully", $user);
                 } else {
                     echo $this->generateResponse("false", "Your username or password is wrong");
                 }

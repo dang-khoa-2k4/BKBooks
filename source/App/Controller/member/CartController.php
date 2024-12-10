@@ -11,6 +11,7 @@ class CartController extends BaseController{
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!isset($_SESSION['id'])) {
                 echo $this->generateResponse('false', 'Please login');
+                print_r($_SESSION['id']);
                 exit();
             }
         
@@ -48,7 +49,7 @@ class CartController extends BaseController{
         
             // Dữ liệu hợp lệ, chuẩn bị truyền vào model
             $data_to_model = [
-                "memberID" => $member_id,
+                "memberid" => $member_id,
                 "bookid" => $book_id,
                 "quantity" => $quantity
             ];
