@@ -27,7 +27,9 @@ class Router
         $this->setParamsFromURL($url);
 
         if ($this->checkUserRole() && $this->controller != 'Home') {
-            header('Location: /login');
+            // header('Location: /login');
+            header('Content-Type: application/json');
+            echo json_encode(['error' => 'Unauthorized']);
             exit();
         }
 
