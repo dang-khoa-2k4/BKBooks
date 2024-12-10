@@ -84,7 +84,7 @@ class BookController extends BaseController{
             }
 
             $genre = $_GET['genre']; // Lấy thể loại từ URL
-            [$result, $msg, [$data, $count]] = $this->bookmodel->getByGenreBook($genre, $page, $perpage);
+            [$result, $msg, [$data, $count]] = $this->bookmodel->getBookByGenre($genre, $page, $perpage);
 
             if ($result) {
 
@@ -124,7 +124,7 @@ class BookController extends BaseController{
             $author = $_GET['author']; // Lấy tên tác giả từ URL
 
             // Gọi phương thức getBookByAuthor từ model để lấy danh sách sách theo tác giả
-            [$result, $msg, [$data, $count]] = $this->bookmodel->getByAuthorBook($author, $page, $perpage);
+            [$result, $msg, [$data, $count]] = $this->bookmodel->getBookByAuthor($author, $page, $perpage);
 
             if ($result) {
                 // Tính toán số trang và trả về kết quả
