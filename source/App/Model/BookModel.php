@@ -120,7 +120,7 @@ class BookModel extends BaseModel{
      * $result = true if success, false if fail
      * $msg = message
      */
-    public function getBookByGenre($genre, $page, $perPage){
+    public function getByGenreBook($genre, $page, $perPage){
     try{
         $result = $this->getByLike('genre', "%$genre%", $perPage, ($page - 1)* $perPage);
         if(!$result){
@@ -150,7 +150,7 @@ class BookModel extends BaseModel{
      * $count = number of books
      * $result = true if success, false if fail
      */
-    public function getBookByAuthor($author, $page, $perPage){
+    public function getByAuthorBook($author, $page, $perPage){
     try{
         $result = $this->getByLike('author', "%$author%", $perPage, ($page - 1)* $perPage);
         if(!$result){
