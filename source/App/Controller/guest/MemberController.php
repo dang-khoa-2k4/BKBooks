@@ -73,12 +73,10 @@ class MemberController extends BaseController {
                     'email' => $email,
                     'phone' => $phone,
                     'DOB' => $DOB,
-                    'role'
                 ];
 
                 // Gọi phương thức register trong model
-
-                [$result, $msg] = $this->membermodel->registerMember($data_to_model);
+                [$result, $msg] = $this->membermodel->register($data_to_model);
                 echo $this->generateResponse($result ? "true" : "false", $msg);
             
         } else {
@@ -119,7 +117,7 @@ class MemberController extends BaseController {
 
                     //set session id and role
                     $_SESSION['id'] = $user['ID'];
-                    $_SESSION['role']= $user['ID'];
+                    $_SESSION['Role']= $user['Role'];
 
 
                     echo $this->generateResponse("true", "Login successfully");
