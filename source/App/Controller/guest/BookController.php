@@ -46,7 +46,7 @@ class BookController extends BaseController{
      * Nếu không tìm thấy, trả về thông báo lỗi.
      * Phương thức này yêu cầu tham số `id` trong URL.
      */
-    public function getIDBook() {
+    public function getBook() {
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $id = isset($_GET['id']) && is_numeric($_GET['id']) ? (int)$_GET['id'] : null; // Kiểm tra ID hợp lệ
             if (!$id) {
@@ -84,7 +84,7 @@ class BookController extends BaseController{
             }
 
             $genre = $_GET['genre']; // Lấy thể loại từ URL
-            [$result, $msg, [$data, $count]] = $this->bookmodel->getBookByGenre($genre, $page, $perpage);
+            [$result, $msg, [$data, $count]] = $this->bookmodel->getByGenreBook($genre, $page, $perpage);
 
             if ($result) {
 
@@ -124,7 +124,7 @@ class BookController extends BaseController{
             $author = $_GET['author']; // Lấy tên tác giả từ URL
 
             // Gọi phương thức getBookByAuthor từ model để lấy danh sách sách theo tác giả
-            [$result, $msg, [$data, $count]] = $this->bookmodel->getBookByAuthor($author, $page, $perpage);
+            [$result, $msg, [$data, $count]] = $this->bookmodel->getByAuthorBook($author, $page, $perpage);
 
             if ($result) {
                 // Tính toán số trang và trả về kết quả
