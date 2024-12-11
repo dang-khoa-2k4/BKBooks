@@ -21,11 +21,11 @@ class BookController extends BaseController{
 
             $page = isset($_GET['page']) ? (int)$_GET['page'] : 1; // Lấy trang hiện tại, mặc định là trang 1
             $perpage = isset($_GET['perpage']) ? (int)$_GET['perpage'] : 10; // Lấy số sách trên mỗi trang, mặc định là 10 sách
-            $sortField = isset($_GET['sortField']) ? (int)$_GET['sortField'] : null;
+            $sortField = isset($_GET['sortField']) ? $_GET['sortField'] : null;
             $sortOpt = isset($_GET['sortOpt']) ? (int)$_GET['sortOpt'] : null;
 
             [$result, $msg, [$data, $count]] =
-            $this->bookmodel->getAllBookStock($page, $perpage, $sortField, $sortOpt);
+            $this->bookmodel->getAllStockBook($page, $perpage, $sortField, $sortOpt);
             if ($result) {
                 $totalPage = ceil($count / $perpage);
                 $meta = [
