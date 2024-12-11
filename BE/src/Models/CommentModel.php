@@ -125,7 +125,7 @@ class CommentModel extends BaseModel{
             $offset = ($page -1) * $perPage;
 
             $stmt = self::$pdo->prepare("
-                SELECT * FROM comment c
+                SELECT (m.FirstName|| ' ' || m.LastName) AS Fullname, c.Time, c.Content FROM comment c
                 JOIN member m ON c.memberid = m.id
                 JOIN book b ON c.bookid = b.id 
                 $whereClause 
