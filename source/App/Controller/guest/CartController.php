@@ -159,7 +159,7 @@ class CartController extends BaseController{
         
     }
 
-    public function GetAllBookCart(){
+    public function getAllBookCart(){
         if($_SERVER['REQUEST_METHOD']==='GET'){
             if (!isset($_SESSION['id'])) {
                 echo $this->generateResponse('false', 'Please login');

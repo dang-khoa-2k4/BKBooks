@@ -145,9 +145,8 @@ class CommentController extends BaseController{
             $perpage = isset($_GET['perpage']) ? (int)$_GET['perpage'] : 10;
 
             [$result, $msg, [$commentlist, $count]] = $this->CommentModel->getAllComment($page, $perpage, $book_id);
-            
+
             if ($result) {
-                // Tính toán số trang và trả về kết quả
                 $totalPage = ceil($count / $perpage);
                 $meta = [
                     "page" => $page,
@@ -155,10 +154,7 @@ class CommentController extends BaseController{
                     "totalPage" => $totalPage,
                     "TotalRecord" => $count
                 ];
-                echo $this->generateResponse("true", $msg, $commentlist, $meta);
-            } else {
-                // Trả về lỗi nếu không có sách của tác giả
-                echo $this->generateResponse("false", $msg, []);
+                echo $this->generateResponse("complete", $msg, $commentlist, $meta);
             }
         } else {
             echo $this->generateResponse("false", "Invalid request method");

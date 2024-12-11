@@ -24,12 +24,8 @@ class CartModel extends BaseModel{
                     VALUES (:memberID, :bookID, :quantity) 
                     ON DUPLICATE KEY UPDATE quantity = :quantity
                 ");
-                // print_r($data['memberid']);
-                // print_r($data["bookid"]);
-                // print_r($data["quantity"]);
             $result = $stmt->execute(['memberID' => $data['memberid'], 'bookID' => $data["bookid"], 'quantity' => $data["quantity"]]);
 
-            // $result = $this->insert($data);
             if($result){
                 $msg = 'Add to cart successfully';
                 return [true, $msg];

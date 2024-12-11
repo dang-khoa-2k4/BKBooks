@@ -26,8 +26,6 @@ class Router
         $this->setActionFromURL($url);
         $this->setParamsFromURL($url);
         $this->checkUserRole();
-
-        // print_r($this->action);
         $this->loadController();
     }
 

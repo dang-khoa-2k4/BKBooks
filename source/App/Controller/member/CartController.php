@@ -15,7 +15,7 @@ class CartController extends BaseController{
             }
         
             $member_id = $_SESSION['id'];
-            //print_r($member_id);
+            //print_r($member_id);  
 
             $jsonData = file_get_contents('php://input');
             $data = json_decode($jsonData, true); // Giải mã JSON thành mảng
@@ -48,7 +48,7 @@ class CartController extends BaseController{
         
             // Dữ liệu hợp lệ, chuẩn bị truyền vào model
             $data_to_model = [
-                "memberID" => $member_id,
+                "memberid" => $member_id,
                 "bookid" => $book_id,
                 "quantity" => $quantity
             ];
@@ -159,7 +159,7 @@ class CartController extends BaseController{
         
     }
     // xem lại hàm delete:)) lỡ ngu xóa mất tài khoản như chơi
-    public function GetAllBookCart(){
+    public function getAllBookCart(){
         if($_SERVER['REQUEST_METHOD']==='GET'){
             if (!isset($_SESSION['id'])) {
                 echo $this->generateResponse('false', 'Please login');

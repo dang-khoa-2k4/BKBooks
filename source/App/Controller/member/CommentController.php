@@ -150,9 +150,18 @@ class CommentController extends BaseController{
             $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
             $perpage = isset($_GET['perpage']) ? (int)$_GET['perpage'] : 10;
 
-            [$result, $msg, $data] = $this->CommentModel->getAllComment($page, $perpage, $book_id);
-            
-            echo $this->generateResponse($result ? "true" : "false", $msg, $data);
+            [$result, $msg, [$commentlist, $count]] = $this->CommentModel->getAllComment($page, $perpage, $book_id);
+
+            if ($result) {
+                $totalPage = ceil($count / $perpage);
+                $meta = [
+                    "page" => $page,
+                    "perpage" => $perpage,
+                    "totalPage" => $totalPage,
+                    "TotalRecord" => $count
+                ];
+                echo $this->generateResponse("complete", $msg, $commentlist, $meta);
+            }
         } else {
             echo $this->generateResponse("false", "Invalid request method");
         }
