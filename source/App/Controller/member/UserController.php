@@ -100,6 +100,7 @@ class MemberController extends BaseController{
                 [$result, $msg, $user] = $this->membermodel->login($data_to_model);
                 if ($result) {
                     $_SESSION['id'] = $user['ID'];
+                    $_SESSION['role'] = $user['Role'];
                     echo $this->generateResponse("true", "Login successfully");
                 } else {
                     echo $this->generateResponse("false", "Your username or password is wrong");

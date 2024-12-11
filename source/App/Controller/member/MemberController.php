@@ -18,11 +18,9 @@ class MemberController extends BaseController {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Lấy nội dung body của request
             $jsonData = file_get_contents('php://input');
-           // print_r($jsonData);
             $data = json_decode($jsonData, true); // Giải mã JSON thành mảng
 
             // Kiểm tra nếu dữ liệu có tồn tại
-            //print_r($data);
             if (!isset($data['username'], 
                         $data['password'], 
                         $data['email'],
