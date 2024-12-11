@@ -155,8 +155,8 @@ class BookController {
         echo json_encode($response);
     }
 
-    public function getBookByPriceRange($priceBegin, $priceEnd, $page, $perPage){
-        [$result, $msg, [$books, $count]] = $this->bookModel->getBookByPriceRange($priceBegin, $priceEnd, $page, $perPage); 
+    public function getBookByPriceRange($priceBegin, $priceEnd, $page, $perPage, $sortOpt){
+        [$result, $msg, [$books, $count]] = $this->bookModel->getBookByPriceRange($priceBegin, $priceEnd, $page, $perPage, $sortOpt); 
         if(!$result){
             header("Content-Type: application/json");
             $response = [

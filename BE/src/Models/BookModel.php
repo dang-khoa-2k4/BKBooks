@@ -269,7 +269,16 @@ class BookModel extends BaseModel{
         }
     }
 
-    public function getBookByPriceRange($priceBegin, $priceEnd, $page, $perPage){
+    /**
+     * Summary of getBookByPriceRange
+     * @param mixed $priceBegin
+     * @param mixed $priceEnd
+     * @param mixed $page
+     * @param mixed $perPage
+     * @param mixed $sortOpt: 1: ASC, 2: DESC
+     * @return [$result, $msg, [$books, $count]]
+     */
+    public function getBookByPriceRange($priceBegin, $priceEnd, $page, $perPage, $sortOpt=null){
         try{
             $lim = $perPage;
             $offset = ($page -1) * $perPage;
@@ -281,8 +290,14 @@ class BookModel extends BaseModel{
                 $priceEnd = PHP_INT_MAX;
             }
 
+            $orderByClause = "";
+            if($sortOpt){
+                $orderByClause = $sortOpt == 1? "ORDER BY price ASC": "ORDER BY price DESC";
+            }
+            
+
             $stmt = self::$pdo->prepare("SELECT * FROM $this->table WHERE price >= :priceBegin 
-            AND price <= :priceEnd LIMIT $lim OFFSET $offset");
+            AND price <= :priceEnd $orderByClause LIMIT $lim OFFSET $offset");
             $result = $stmt->execute(["priceBegin" => $priceBegin, "priceEnd" => $priceEnd]);
 
             $stmt1 = self::$pdo->prepare("SELECT COUNT(*) FROM $this->table WHERE price >= :priceBegin AND price <= :priceEnd");

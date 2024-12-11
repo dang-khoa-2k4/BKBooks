@@ -89,7 +89,7 @@ if($_SERVER['REQUEST_METHOD'] === 'GET' && $_GET['action'] === 'deleteBook') {
 }
 if($_SERVER['REQUEST_METHOD'] === 'GET' && $_GET['action'] === 'getBookByRange') {
     // AuthMiddleware::checkRole('admin');
-    $bookController->getBookByPriceRange($_GET['priceBegin'], $_GET['priceEnd'], $_GET['page'], $_GET['perPage']);
+    $bookController->getBookByPriceRange($_GET['priceBegin'], $_GET['priceEnd'], $_GET['page'], $_GET['perPage'], $_GET['sortOpt']);
 }
 
 ?>
