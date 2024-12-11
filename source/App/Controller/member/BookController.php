@@ -25,7 +25,7 @@ class BookController extends BaseController{
             $sortOpt = isset($_GET['sortOpt']) ? (int)$_GET['sortOpt'] : null;
 
             [$result, $msg, [$data, $count]] =
-            $this->bookmodel->getAllBookStock($page, $perpage, $sortField, $sortOpt);
+            $this->bookmodel->getAllStockBook($page, $perpage, $sortField, $sortOpt);
             if ($result) {
                 $totalPage = ceil($count / $perpage);
                 $meta = [

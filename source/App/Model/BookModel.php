@@ -245,7 +245,7 @@ class BookModel extends BaseModel{
      * $count = number of books
      * $result = true if success, false if fail
      */
-    public function getAllBookStock($page, $perPage, $sortField=null, $sortOpt=null){
+    public function getAllStockBook($page, $perPage, $sortField=null, $sortOpt=null){
         try{
             $lim = $perPage;
             $offset = ($page -1) * $perPage;

@@ -73,7 +73,6 @@ class Router
         $controllerName = $this->controller . 'Controller'; // Example: 'Home' -> 'HomeController'
         $controllerFile = 'App/Controller/' . $this->role . '/' . $controllerName . '.php';
         
-        // print_r($controllerFile);
         if (file_exists($controllerFile)) {
             require_once($controllerFile);
             if (!class_exists($controllerName)) {
