@@ -33,9 +33,9 @@ class CommentModel extends BaseModel{
                 'memberID'=> $memberid,
                 'content'=> $content
             ]);
-            print_r($data['bookid']);
-            print_r($data['memberid']);
-            print_r($data['content']);
+            // print_r($data['bookid']);
+            // print_r($data['memberid']);
+            // print_r($data['content']);
             if($result){
                 $msg ='Add comment successfully';
                 return [true, $msg];
@@ -46,6 +46,7 @@ class CommentModel extends BaseModel{
             }
         }
         catch(Exception $e){
+            // echo $e->getMessage();
             $msg = "Add comment failed";
             return [false, $msg];
         }
@@ -74,6 +75,7 @@ class CommentModel extends BaseModel{
                 return [false, $msg];
             }
         }catch(Exception $e){
+            //echo $e->getMessage();
             $msg = "Update comment failed";
             return [false, $msg];
         }

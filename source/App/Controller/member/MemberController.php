@@ -74,7 +74,7 @@ class MemberController extends BaseController {
                 ];
 
                 // Gọi phương thức register trong model
-                [$result, $msg] = $this->membermodel->register($data_to_model);
+                [$result, $msg] = $this->membermodel->registerMember($data_to_model);
                 echo $this->generateResponse($result ? "true" : "false", $msg);
             
         } else {
@@ -291,6 +291,29 @@ class MemberController extends BaseController {
             echo $this->generateResponse("false", "Invalid request method");
         }
     }
+
+    public function logoutMember() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Kiểm tra nếu session đang được khởi tạo
+            if (session_status() == PHP_SESSION_NONE) {
+                session_start();
+            }
+    
+            // Kiểm tra nếu người dùng đã đăng nhập
+            if (isset($_SESSION['id'])) {
+                // Xóa session để đăng xuất người dùng
+                session_unset(); // Hủy tất cả các biến session
+                session_destroy(); // Hủy session
+    
+                echo $this->generateResponse("true", "Logout successfully");
+            } else {
+                echo $this->generateResponse("false", "You are not logged in");
+            }
+        } else {
+            echo $this->generateResponse("false", "Invalid request method");
+        }
+    }
+    
 }
 
 ?>
