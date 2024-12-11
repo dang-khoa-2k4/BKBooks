@@ -121,7 +121,8 @@ class OrderController extends BaseController{
             $page = isset($_GET['page']) ? (int)$_GET['page'] : 1; // Lấy trang hiện tại, mặc định là trang 1
             $perpage = isset($_GET['perpage']) ? (int)$_GET['perpage'] : 10; // Lấy số sách trên mỗi trang, mặc định là 10 sách
 
-            [$result, $msg, [$book, $count, $totalPrice]] =$this->Ordermodel->getBookInOrder($order_id, $page, $perpage);  
+            [$result, $msg, [$book, $count, $totalPrice]] =
+            $this->Ordermodel->getBookInOrder($order_id, $page, $perpage);  
             if ($result) {
                 $totalPage = ceil($count / $perpage);
                 $meta = [
@@ -156,8 +157,17 @@ class OrderController extends BaseController{
         $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
         $perpage = isset($_GET['perpage']) ? (int)$_GET['perpage'] : 10;
 
-        [$result, $msg, $order]=$this->Ordermodel->getAllOrder($page, $perpage, $member_id, $bookID, $status );
-        echo $this-> generateResponse($result? "true":"false", $msg, $order);
+        [$result, $msg, [$order , $count]] = 
+        $this->Ordermodel->getAllOrder($page, $perpage, $member_id, $bookID, $status);
+        if($result){
+            $totalPage = ceil($count / $perpage);
+            $meta = [
+                "page" => $page,
+                "perpage" => $perpage,
+                "totalPage" => $totalPage,
+                "TotalRecord" => $count
+            ];
+            echo $this->generateResponse("complete", $msg, $order, $meta);
         }else{
             echo $this->generateResponse('false', 'Invalid request method');
         }
