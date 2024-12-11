@@ -99,7 +99,8 @@ class MemberController extends BaseController{
                 // Gọi phương thức đăng nhập trong model    
                 [$result, $msg, $user] = $this->membermodel->login($data_to_model);
                 if ($result) {
-                    $_SESSION['id'] = $user['ID'];
+                    $_SESSION['Id'] = $user['ID'];
+                    $_SESSION['Role'] = $user['Role'];
                     echo $this->generateResponse("true", "Login successfully");
                 } else {
                     echo $this->generateResponse("false", "Your username or password is wrong");
