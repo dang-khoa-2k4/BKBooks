@@ -268,4 +268,39 @@ class BookModel extends BaseModel{
             return [false, $msg, []];
         }
     }
+
+    public function getBookByPriceRange($priceBegin, $priceEnd, $page, $perPage){
+        try{
+            $lim = $perPage;
+            $offset = ($page -1) * $perPage;
+            if(!$priceBegin|| $priceBegin <0 ){
+                $priceBegin = 0;
+            }
+
+            if(!$priceEnd){
+                $priceEnd = PHP_INT_MAX;
+            }
+
+            $stmt = self::$pdo->prepare("SELECT * FROM $this->table WHERE price >= :priceBegin 
+            AND price <= :priceEnd LIMIT $lim OFFSET $offset");
+            $result = $stmt->execute(["priceBegin" => $priceBegin, "priceEnd" => $priceEnd]);
+
+            $stmt1 = self::$pdo->prepare("SELECT COUNT(*) FROM $this->table WHERE price >= :priceBegin AND price <= :priceEnd");
+            $result1 = $stmt1->execute(["priceBegin"=> $priceBegin,"priceEnd"=> $priceEnd]);
+            $count = $stmt1->fetchColumn();
+
+            if(!$result){
+                $msg = "Get all book by price range failed";
+                return [false, $msg,[]];
+            }else{
+                $msg = "Get all book by price range successfully";
+                return [true, $msg, [$stmt->fetchAll(PDO::FETCH_ASSOC), $count]];
+            }
+
+        }
+        catch(Exception $e){
+            $msg = "Get all book by price range failed";
+            return [false, $msg, []];
+        }
+    }
 }

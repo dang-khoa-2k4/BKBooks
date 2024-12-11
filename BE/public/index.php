@@ -2,7 +2,7 @@
 // Bắt đầu session
 session_start();
 
-// Bao gồm các file cần thiết
+// Bao gồm các file cần th
 require_once '../src/config.php';      // Cấu hình cơ sở dữ liệu
 require_once '../src/middleware/AuthMiddleware.php'; // Middleware kiểm tra quyền truy cập
 // require_once '../src/routes/cartRoutes.php'; // Các route giỏ hàng

@@ -154,5 +154,36 @@ class BookController {
         ];
         echo json_encode($response);
     }
+
+    public function getBookByPriceRange($priceBegin, $priceEnd, $page, $perPage){
+        [$result, $msg, [$books, $count]] = $this->bookModel->getBookByPriceRange($priceBegin, $priceEnd, $page, $perPage); 
+        if(!$result){
+            header("Content-Type: application/json");
+            $response = [
+                "status" => "fail",
+                "message" => $msg,
+                "data" => []
+            ];
+            echo json_encode($response);
+        }
+        else{
+            header("Content-Type: application/json");
+            $totalPage = ceil($count/$perPage);
+
+            $meta = [
+                "page" => $page,
+                "perPage" => $perPage,
+                "total"=> $totalPage,
+                "totalRecord" => $count,
+            ];
+            $response = [
+                "status" => "success",
+                "message" => $msg,
+                "data" => $books,
+                "meta" => $meta
+            ];
+            echo json_encode($response);
+        }
+    }
 }
 ?>
