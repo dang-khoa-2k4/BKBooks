@@ -42,10 +42,15 @@ class BookModel extends BaseModel{
     //     }
     // }
 
-    public function getAllBooks($page, $perPage){
+    public function getAllBooks($page, $perPage, $sortField=null, $sortOpt=null){
         try{
             $lim = $perPage;
             $offset = ($page - 1) * $perPage;
+
+            $orderByClause = "";
+            if($sortField&&$sortOpt){
+                $orderByClause = $sortOpt ==1? "ORDER BY $sortField ASC": "ORDER BY $sortField DESC";
+            }
 
             $stmt = self::$pdo->prepare("
                 SELECT b.*, 
@@ -55,6 +60,7 @@ class BookModel extends BaseModel{
                 LEFT JOIN contain c ON b.id = c.BookID
                 LEFT JOIN `order` o ON c.OrderID = o.ID
                 GROUP BY b.id
+                $orderByClause
                 LIMIT $lim OFFSET $offset
             ");
 
@@ -244,11 +250,17 @@ class BookModel extends BaseModel{
         }
     }
 
-    public function getAllBookInStock($page, $perPage){
+    public function getAllBookInStock($page, $perPage, $sortField=null, $sortOpt=null){
         try{
             $lim = $perPage;
             $offset = ($page -1) * $perPage;
-            $stmt = self::$pdo->prepare("SELECT * FROM $this->table WHERE quantity > 0 LIMIT $lim OFFSET $offset");
+
+            $orderByClause = "";
+            if($sortField||$sortOpt){
+                $orderByClause = $sortOpt ==1? "ORDER BY $sortField ASC": "ORDER BY $sortField DESC";
+            }
+
+            $stmt = self::$pdo->prepare("SELECT * FROM $this->table WHERE quantity > 0 $orderByClause LIMIT $lim OFFSET $offset");
             $result = $stmt->execute();
 
             $stmt1 = self::$pdo->prepare("SELECT COUNT(*) FROM $this->table WHERE quantity > 0");

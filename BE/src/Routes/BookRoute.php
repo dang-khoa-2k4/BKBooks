@@ -10,9 +10,9 @@ $bookController = new BookController();
 // Route cho khách hàng (xem sách)
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && $_GET['action'] === 'getAllBooks') {
     if(!isset($_GET['page']) || !isset($_GET['perPage'])) {
-        $bookController->getBooks(1, 10);
+        // $bookController->getBooks(1, 10);
     } else {
-        $bookController->getBooks($_GET['page'], $_GET['perPage']);
+        $bookController->getBooks($_GET['page'], $_GET['perPage'], $_GET['sortField'], $_GET['sortOpt']);
     }
 }
 

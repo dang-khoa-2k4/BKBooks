@@ -5,8 +5,8 @@ class BookController {
         require_once '../src/Models/BookModel.php';
         $this->bookModel = new BookModel();
     }
-    public function getBooks($page, $perPage) {
-        [$result,$msg,[$books, $count]] = $this->bookModel->getAllBooks($page, $perPage);
+    public function getBooks($page, $perPage, $sortField, $sortOpt) {
+        [$result,$msg,[$books, $count]] = $this->bookModel->getAllBookInStock($page, $perPage, $sortField, $sortOpt);
 
 
         header('Content-Type: application/json');
