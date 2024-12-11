@@ -158,8 +158,8 @@ class CartController extends BaseController{
         }
         
     }
-    // xem lại hàm delete:)) lỡ ngu xóa mất tài khoản như chơi
-    public function GetallBookCart(){
+
+    public function GetAllBookCart(){
         if($_SERVER['REQUEST_METHOD']==='GET'){
             if (!isset($_SESSION['id'])) {
                 echo $this->generateResponse('false', 'Please login');
@@ -170,9 +170,19 @@ class CartController extends BaseController{
             $page = isset($_GET['page']) ? (int)$_GET['page'] : 1; // Lấy trang hiện tại, mặc định là trang 1
             $perpage = isset($_GET['perpage']) ? (int)$_GET['perpage'] : 10; // Lấy số sách trên mỗi trang, mặc định là 10 sách
             
-            [$result, $msg, $data]=$this->CartModel->getAllBookInCart($memberid, $page, $perpage);
-
-            echo $this->generateResponse($result?"true":"false", $msg, $data);
+            [$result, $msg, [$data, $count]] = $this->CartModel->getAllBookInCart($memberid, $page, $perpage);
+            if ($result) {
+                $totalPage = ceil($count / $perpage);
+                $meta = [
+                    "page" => $page,
+                    "perpage" => $perpage,
+                    "totalPage" => $totalPage,
+                    "TotalRecord" => $count
+                ];
+                echo $this->generateResponse("complete", $msg, $data, $meta);
+            }
+        }else {
+            echo $this->generateResponse("false", "Invalid request method");
         }
     }
 

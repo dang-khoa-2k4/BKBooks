@@ -5,7 +5,7 @@ class BaseController
     protected $model_instance;  // Instance of the model
     protected $model;  // Model name
     protected $no_response_method = ['add', 'update', 'delete', 'register', 'reject', 'accept', 'addStock'];
-    protected $response_method = ['getAll', 'getById', 'getAllStock'];
+    protected $response_method = ['getAll', 'getById', 'getAllStock', 'getStatistic'];
 
     // Constructor, khi kế thừa sẽ gọi constructor của lớp con và load model
     public function __construct($modelName)
@@ -26,7 +26,6 @@ class BaseController
     // ex model called: getAllBook, getByIDBook, addBook, updateBook, deleteBook
     public function __callModel($method, $params = [])
     {
-        // $this->respondJson(['error' => 'Method not found']);
         $callMethod = strtolower($method) . $this->model; // Example: 'get' -> 'getCustomer'
         $callModel = $this->model_instance;
         
@@ -41,7 +40,7 @@ class BaseController
                 }
             } else if (in_array($method, $this->response_method)) {
                 if ($response[0] == true) {
-                    if ($method != 'getById') 
+                    if ($method != 'getById' && $method != 'getStatistic') 
                     {
                         $totalPage = ceil($response[2][1] / $params[1]);
                         $meta = [

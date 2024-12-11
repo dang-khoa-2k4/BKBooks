@@ -81,4 +81,11 @@ class BookController extends BaseController
             parent::__callModel('delete', [$id]);
         }
     }
+
+    public function getStatisticBook()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+            parent::__callModel('getStatistic', []);
+        }
+    }
 }
