@@ -58,7 +58,7 @@ class BookController extends BaseController{
             [$result, $msg, $book] = $this->bookmodel->getByIdBook($id);
 
             if ($result) {
-                // $this->generateResponse("true", $msg, [$book]);
+                $this->generateResponse("true", $msg, [$book]);
             } else {
                 echo $this->generateResponse("false", $msg, []);
             }
