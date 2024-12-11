@@ -52,6 +52,11 @@ class MemberController extends BaseController{
                     return;
                 }
 
+                if (strlen($password) < 8) {
+                    echo $this->generateResponse("false", "Password must be at least 6 characters");
+                    exit;
+                }
+
 
                 // Dữ liệu hợp lệ, chuẩn bị truyền vào model
                 $data_to_model = [
@@ -99,8 +104,8 @@ class MemberController extends BaseController{
                 // Gọi phương thức đăng nhập trong model    
                 [$result, $msg, $user] = $this->membermodel->login($data_to_model);
                 if ($result) {
-                    $_SESSION['Id'] = $user['ID'];
-                    $_SESSION['Role'] = $user['Role'];
+                    $_SESSION['id'] = $user['ID'];
+                    $_SESSION['role'] = $user['Role'];
                     echo $this->generateResponse("true", "Login successfully");
                 } else {
                     echo $this->generateResponse("false", "Your username or password is wrong");
@@ -134,6 +139,12 @@ class MemberController extends BaseController{
                     return;
                 }
 
+                if (strlen($newPassword) < 8) {
+                    echo $this->generateResponse("false", "Password must be at least 6 characters");
+                    exit;
+                }
+
+                // Tạo mảng dữ liệu để gửi đến model
                 $data_to_model = [
                     'id' => $id,
                     'oldPassword' => $oldPassword,
@@ -152,6 +163,29 @@ class MemberController extends BaseController{
             echo $this->generateResponse("false", "Invalid request method");
         }
     }
+
+    public function logoutMember() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Kiểm tra nếu session đang được khởi tạo
+            if (session_status() == PHP_SESSION_NONE) {
+                session_start();
+            }
+    
+            // Kiểm tra nếu người dùng đã đăng nhập
+            if (isset($_SESSION['id'])) {
+                // Xóa session để đăng xuất người dùng
+                session_unset(); // Hủy tất cả các biến session
+                session_destroy(); // Hủy session
+    
+                echo $this->generateResponse("true", "Logout successfully");
+            } else {
+                echo $this->generateResponse("false", "You are not logged in");
+            }
+        } else {
+            echo $this->generateResponse("false", "Invalid request method");
+        }
+    }
+    
 
 }  
 ?>

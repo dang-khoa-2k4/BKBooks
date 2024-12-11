@@ -53,8 +53,7 @@ class BaseController
     }
     protected function generateResponse($status, $message, $data = [], $meta = null)
     {
-        header("Access-Control-Allow-Origin: *");
-        header("Content-Type: application/json; charset=UTF-8");
+        header('Content-Type: application/json');
         $response = [
             "status" => $status,
             "message" => $message,

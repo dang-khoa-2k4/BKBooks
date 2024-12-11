@@ -60,7 +60,10 @@ class MemberController extends BaseController {
                     exit;
                 }
 
-
+                if (strlen($password) < 8) {
+                    echo $this->generateResponse("false", "Password must be at least 6 characters");
+                    exit;
+                }
 
                 // Dữ liệu hợp lệ, chuẩn bị truyền vào model
                 $data_to_model = [
@@ -155,10 +158,13 @@ class MemberController extends BaseController {
 
                 // Kiểm tra nếu mật khẩu mới khác mật khẩu cũ
                 if ($oldPassword === $newPassword) {
-                    print_r($oldPassword );
-                    print_r($newPassword);
                     echo $this->generateResponse("false", "New password must be different from old password");
                     return;
+                }
+
+                if (strlen($newPassword) < 8) {
+                    echo $this->generateResponse("false", "Password must be at least 6 characters");
+                    exit;
                 }
 
                 // Tạo mảng dữ liệu để gửi đến model
