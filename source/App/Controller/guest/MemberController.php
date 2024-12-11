@@ -76,7 +76,7 @@ class MemberController extends BaseController {
                 ];
 
                 // Gọi phương thức register trong model
-                [$result, $msg] = $this->membermodel->register($data_to_model);
+                [$result, $msg] = $this->membermodel->registerMember($data_to_model);
                 echo $this->generateResponse($result ? "true" : "false", $msg);
             
         } else {
@@ -120,7 +120,7 @@ class MemberController extends BaseController {
                     $_SESSION['Role']= $user['Role'];
 
 
-                    echo $this->generateResponse("true", "Login successfully");
+                    echo $this->generateResponse("true", "Login successfully", $user);
                 } else {
                     echo $this->generateResponse("false", "Your username or password is wrong");
                 }
