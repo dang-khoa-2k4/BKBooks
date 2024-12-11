@@ -10,10 +10,10 @@ class BookController extends BaseController
     }
 
     // API: Get all books
-    public function getAllBook($page, $perPage)
+    public function getAllBook($page = 1, $perPage = 5, $sortField = null, $sortOtp = null)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-            parent::__callModel('getAll', [$page, $perPage]);
+            parent::__callModel('getAll', [$page, $perPage, $sortField, $sortOtp]);
         }
     }
 
@@ -30,7 +30,8 @@ class BookController extends BaseController
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = json_decode(file_get_contents('php://input'), true);
-
+            // default when add book
+            $data['book'] = 0;
             if (isset($data['name'], $data['author'], $data['price'])) {
                 parent::__callModel('add', [$data]);
             } else {

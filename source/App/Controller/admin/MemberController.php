@@ -66,7 +66,7 @@ class MemberController extends BaseController
     }
 
     // Get all Members
-    public function getAllMember($page, $perPage)
+    public function getAllMember($page = 1, $perPage = 5)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             parent::__callModel('getAll', [$page, $perPage]);

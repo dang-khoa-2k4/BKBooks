@@ -41,7 +41,21 @@ class BaseController
                 }
             } else if (in_array($method, $this->response_method)) {
                 if ($response[0] == true) {
-                    echo json_encode($response[2]);
+                    if ($method != 'getById') 
+                    {
+                        $totalPage = ceil($response[2][1] / $params[1]);
+                        $meta = [
+                            "page" => $params[0],
+                            "perpage" => $params[1],
+                            "totalPage" => $totalPage,
+                            "TotalRecord" => $response[2][1]
+                        ];
+                        echo json_encode(['data' => $response[2][0], 'meta' => $meta]);
+                    } 
+                    else 
+                    {
+                        echo json_encode(['data' => $response[2]]);
+                    }
                 } else {
                     echo json_encode(['error' => $response[1]]);
                 }

@@ -2,8 +2,6 @@
 require_once (__DIR__ . '/../config.php');
 require_once 'BaseModel.php';
 
-
-
 /** 
  * write comment to explain the class
  * 
@@ -20,33 +18,24 @@ class BookModel extends BaseModel{
      * Get all books
      * @param $page
      * @param $perPage
+     * @param $sortField: field to sort
+     * @param $sortOpt: 1: ASC, 2: DESC
      * @return [$result, $msg, [$books, $count]]
      * $books = [$book1, $book2, ...]
      * $count = number of books
      * $result = true if success, false if fail
      * $msg = message
      */
-    // public function getAllBooks($page, $perPage){
-    // try{
-    //     $result = $this->getAll($perPage, ($page - 1) * $perPage);
-    //     //$result if have data: [$book, $count] else false
-    //     if(!$result){//fail
-    //         return [false, 'Get all books failed', []];
-    //     }
-    //     else{
-    //         return [true, 'Get all books successfully', $result];
-    //     }
-    //     }catch(PDOException $e){
-    //         // $msg = $e->getMessage();
-    //         $msg = "Get all books failed";
-    //         return [false, $msg, []];
-    //     }
-    // }
 
-    public function getAllBook($page, $perPage){
+    public function getAllBook($page, $perPage, $sortField=null, $sortOpt=null){
         try{
             $lim = $perPage;
             $offset = ($page - 1) * $perPage;
+
+            $orderByClause = "";
+            if($sortField&&$sortOpt){
+                $orderByClause = $sortOpt ==1? "ORDER BY $sortField ASC": "ORDER BY $sortField DESC";
+            }
 
             $stmt = self::$pdo->prepare("
                 SELECT b.*, 
@@ -56,6 +45,7 @@ class BookModel extends BaseModel{
                 LEFT JOIN contain c ON b.id = c.BookID
                 LEFT JOIN `order` o ON c.OrderID = o.ID
                 GROUP BY b.id
+                $orderByClause
                 LIMIT $lim OFFSET $offset
             ");
 
@@ -173,7 +163,6 @@ class BookModel extends BaseModel{
      */
     public function addBook($data){
     try{
-        $data['quantity'] = 0;
         $result = $this->insert($data);
         if(!$result){
             return [false, 'Add book failed', []];
@@ -245,12 +234,28 @@ class BookModel extends BaseModel{
             return [false, $msg];
         }
     }
-
-    public function getAllStockBook($page, $perPage){
+    /**
+     * Summary of getAllStockBook
+     * @param mixed $page
+     * @param mixed $perPage
+     * @param mixed $sortField
+     * @param mixed $sortOpt
+     * @return [$result, $msg, [$books, $count]]
+     * $books = [$book1, $book2, ...]
+     * $count = number of books
+     * $result = true if success, false if fail
+     */
+    public function getAllBookStock($page, $perPage, $sortField=null, $sortOpt=null){
         try{
             $lim = $perPage;
             $offset = ($page -1) * $perPage;
-            $stmt = self::$pdo->prepare("SELECT * FROM $this->table WHERE quantity > 0 LIMIT $lim OFFSET $offset");
+
+            $orderByClause = "";
+            if($sortField||$sortOpt){
+                $orderByClause = $sortOpt ==1? "ORDER BY $sortField ASC": "ORDER BY $sortField DESC";
+            }
+
+            $stmt = self::$pdo->prepare("SELECT * FROM $this->table WHERE quantity > 0 $orderByClause LIMIT $lim OFFSET $offset");
             $result = $stmt->execute();
 
             $stmt1 = self::$pdo->prepare("SELECT COUNT(*) FROM $this->table WHERE quantity > 0");
@@ -270,7 +275,54 @@ class BookModel extends BaseModel{
             return [false, $msg, []];
         }
     }
+
+    /**
+     * Summary of getBookByPriceRange
+     * @param mixed $priceBegin
+     * @param mixed $priceEnd
+     * @param mixed $page
+     * @param mixed $perPage
+     * @param mixed $sortOpt: 1: ASC, 2: DESC
+     * @return [$result, $msg, [$books, $count]]
+     */
+    public function getBookByPriceRange($priceBegin, $priceEnd, $page, $perPage, $sortOpt=null){
+        try{
+            $lim = $perPage;
+            $offset = ($page -1) * $perPage;
+            if(!$priceBegin|| $priceBegin <0 ){
+                $priceBegin = 0;
+            }
+
+            if(!$priceEnd){
+                $priceEnd = PHP_INT_MAX;
+            }
+
+            $orderByClause = "";
+            if($sortOpt){
+                $orderByClause = $sortOpt == 1? "ORDER BY price ASC": "ORDER BY price DESC";
+            }
+            
+
+            $stmt = self::$pdo->prepare("SELECT * FROM $this->table WHERE price >= :priceBegin 
+            AND price <= :priceEnd $orderByClause LIMIT $lim OFFSET $offset");
+            $result = $stmt->execute(["priceBegin" => $priceBegin, "priceEnd" => $priceEnd]);
+
+            $stmt1 = self::$pdo->prepare("SELECT COUNT(*) FROM $this->table WHERE price >= :priceBegin AND price <= :priceEnd");
+            $result1 = $stmt1->execute(["priceBegin"=> $priceBegin,"priceEnd"=> $priceEnd]);
+            $count = $stmt1->fetchColumn();
+
+            if(!$result){
+                $msg = "Get all book by price range failed";
+                return [false, $msg,[]];
+            }else{
+                $msg = "Get all book by price range successfully";
+                return [true, $msg, [$stmt->fetchAll(PDO::FETCH_ASSOC), $count]];
+            }
+
+        }
+        catch(Exception $e){
+            $msg = "Get all book by price range failed";
+            return [false, $msg, []];
+        }
+    }
 }
-
-
-?>

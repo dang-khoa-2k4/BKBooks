@@ -24,7 +24,7 @@ class OrderController extends BaseController
     }
 
     // Get all Orders
-    public function getAllOrder($page, $perPage, $memberId = null, $bookID = null, $state = null)
+    public function getAllOrder($page = 1, $perPage = 5, $memberId = null, $bookID = null, $state = null)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             // Gọi phương thức getAll trong model

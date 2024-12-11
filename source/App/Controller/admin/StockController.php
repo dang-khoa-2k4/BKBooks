@@ -22,7 +22,7 @@ class StockController extends BaseController
     }
 
     // Get all stock entries
-    public function getAllStock($page, $perPage)
+    public function getAllStock($page = 1, $perPage = 5)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             // Gọi phương thức getAll trong model
