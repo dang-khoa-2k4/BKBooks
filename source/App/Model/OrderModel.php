@@ -30,16 +30,24 @@ class OrderModel extends BaseModel{
         try{
             $stmt = self::$pdo->prepare("INSERT INTO `$this->table` (memberID, deliveryAddress) VALUES (:memberID, :deliveryAddress)");
             $result = $stmt->execute(["memberID"=> $data["memberID"], "deliveryAddress"=> $data["deliveryAddress"]]);
+            // print_r($data["memberID"]);
+            // print_r($data["deliveryAddress"]);
             $last_id = self::$pdo->lastInsertId();
             $failBook = [];
             $empty = true;
             foreach($data["bookList"] as $book){
+                print_r($book);
                 $stmt = self::$pdo->prepare("SELECT * from cart where memberID = :memberID and bookID = :bookID and quantity = :quantity");
-                $stmt->execute(["memberID"=> $data["memberID"], "bookID"=> $book["bookID"], "quantity" => $book["quantity"]]);
+                $stmt->execute(["memberID"=> intval($data["memberID"]), "bookID"=> intval($book["bookID"]), "quantity" => intval($book["quantity"])]);
+                // print_r($book["bookID"]);
+                // print_r($book['quantity']);
                 $status = $stmt->fetch(PDO::FETCH_ASSOC);
                 if($status&&$status["Status"] === 'available'){
                     $stmt = self::$pdo->prepare("INSERT INTO contain (orderID, bookID, quantity) VALUES (:orderID, :bookID, :quantity)");
-                    $result = $stmt->execute(["orderID"=> $last_id, "bookID"=> $book["bookID"], "quantity"=> $book["quantity"]]);
+                    $result = $stmt->execute([
+                        "orderID"=> $last_id, 
+                        "bookID"=> $book["bookID"], 
+                        "quantity"=> $book["quantity"] ]);
                     $empty = false;
                 }
                 else{

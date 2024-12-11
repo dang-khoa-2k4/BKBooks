@@ -5,7 +5,7 @@ class CommentController extends BaseController{
     private $CommentModel;
 
     public function __construct(){
-        $this->loadModel('Comment');
+        $this->loadModel('CommentModel');
         $this->CommentModel= new CommentModel();
     }
 
@@ -17,34 +17,40 @@ class CommentController extends BaseController{
             }
         
             $member_id = $_SESSION['id'];
-
+        
             $jsonData = file_get_contents('php://input');
-            $data = json_decode($jsonData, true); 
+            $data = json_decode($jsonData, true);
             
             $book_id = $data['book_id'];
             $content = $data['content'];
-
-            // Kiểm tra book_id
-            if (!isset($book_id) || !is_numeric($book_id) || $book_id <= 0) {
-                echo $this->generateResponse("false", "Invalid book ID");
+            
+            // Kiểm tra dữ liệu
+            if (empty($book_id) || empty($content)) {
+                echo $this->generateResponse('false', 'Invalid data');
                 exit();
             }
-
-            $content = htmlspecialchars($content);
-
+        
+            // Nếu không truyền `time`, Controller sẽ tự động lấy thời gian
+            $time = date('Y-m-d H:i:s');  // Lấy thời gian hiện tại nếu không có `time` trong dữ liệu
+            
+            // Chuẩn bị dữ liệu cho Model
             $data_to_model = [
-                "bookid"    =>  $book_id,
-                "memberid"  =>  $member_id,
-                "content"   => $content
+                'bookid' => $book_id,
+                'memberid' => $member_id,
+                'content' => htmlspecialchars($content),
+                'time' => $time // Thêm thời gian vào dữ liệu
             ];
-
-            [$result, $msg]= $this->CommentModel->addComment($data_to_model);
-            echo $this->generateResponse($result ? "true" : "false", $msg);
-        } else {
-            echo $this->generateResponse("false", "Invalid request method");
+        
+            // Gọi phương thức trong Model để thêm bình luận
+            [$result, $msg] = $this->CommentModel->addComment($data_to_model);
+            echo $this->generateResponse($result ? 'true' : 'false', $msg);
+        }
+        else {
+            echo $this->generateResponse('false', 'Invalid request method');
         }
     }
-
+    
+    
     public function updateComment(){
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!isset($_SESSION['id'])) {

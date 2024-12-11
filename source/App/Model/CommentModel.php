@@ -18,12 +18,24 @@ class CommentModel extends BaseModel{
      */
     public function addComment($data){
         try{
-            $stmt = self::$pdo->prepare('INSERT INTO comment (bookid, memberid, content) VALUES (:bookid, :memberid, :content)');
+            $data = array_map('trim', $data);
+
+
+            //print_r($data);
+
+            $stmt = self::$pdo->prepare('INSERT INTO comment (bookID, memberID, content) VALUES (:bookID, :memberID, :content)');
+            $memberid= $data['memberid'];
+            $bookid= $data['bookid'];
+            $content= $data['content'];
+
             $result = $stmt->execute([
-                'bookid'=> $data['bookid'],
-                'memberid'=> $data['memberid'],
-                'content'=> $data['content']
+                'bookID'=> $bookid,
+                'memberID'=> $memberid,
+                'content'=> $content
             ]);
+            print_r($data['bookid']);
+            print_r($data['memberid']);
+            print_r($data['content']);
             if($result){
                 $msg ='Add comment successfully';
                 return [true, $msg];
