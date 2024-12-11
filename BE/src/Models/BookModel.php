@@ -330,4 +330,41 @@ class BookModel extends BaseModel{
             return [false, $msg, []];
         }
     }
+
+    public function getStatisticBook(){
+        try{
+            $stmt = self::$pdo->prepare("SELECT 
+                        SUM(quantity) AS totalQuantity, 
+                        SUM(soldQuantity) AS totalSoldQuantity, 
+                        SUM(onOrderQuantity) AS totalOnOrderQuantity 
+                    FROM (
+                        SELECT 
+                            b.quantity, 
+                            IFNULL(SUM(CASE WHEN o.Status = 'Accepted' THEN c.Quantity ELSE 0 END), 0) AS soldQuantity,
+                            IFNULL(SUM(CASE WHEN o.Status = 'Pending' THEN c.Quantity ELSE 0 END), 0) AS onOrderQuantity
+                        FROM 
+                            book b
+                        LEFT JOIN 
+                            contain c ON b.id = c.BookID
+                        LEFT JOIN 
+                            `order` o ON c.OrderID = o.ID
+                        GROUP BY 
+                            b.id
+                    ) AS RESULT;
+                    ");
+            $result = $stmt->execute();
+            if(!$result){
+                $msg = "Get statistic book failed";
+                return [false, $msg, []];
+            }
+            else{
+                $msg = "Get statistic book successfully";
+                return [true, $msg, $stmt->fetchAll(PDO::FETCH_ASSOC)];
+            }
+            
+        }catch(Exception $e){
+            $msg = "Get statistic book failed";
+            return [false, $msg, []];
+        }
+    }
 }

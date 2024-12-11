@@ -6,9 +6,10 @@ class BookController {
         $this->bookModel = new BookModel();
     }
     public function getBooks($page, $perPage, $sortField, $sortOpt) {
-        [$result,$msg,[$books, $count]] = $this->bookModel->getAllBookInStock($page, $perPage, $sortField, $sortOpt);
+        // [$result,$msg,[$books, $count]] = $this->bookModel->getAllBooks($page, $perPage, $sortField, $sortOpt);
+        [$result,$msg,[$books]] = $this->bookModel->getStatisticBook();
 
-
+        $count =0;
         header('Content-Type: application/json');
         if ($result) {
             $totalPage= ceil($count/$perPage);
