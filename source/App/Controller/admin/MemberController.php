@@ -25,41 +25,62 @@ class MemberController extends BaseController
     // Edit an existing Member
     public function updateMember($id)
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
+        if ($_SERVER['REQUEST_METHOD'] === 'PUT') 
+        {
             $data = json_decode(file_get_contents('php://input'), true);
 
-            $updateData = array();
-    
-                // Danh sách các trường cần kiểm tra
-                $fields = array(
-                    'firstname',
-                    'lastname',
-                    'DOB',
-                    'username',
-                    'password',
-                    'email',
-                    'phone'
-                );
-    
-                foreach ($fields as $field) {
-                    if (isset($data[$field]) && $data[$field] !== '') {
-                        $updateData[$field] = $data[$field];
-                    }
-                }
+            $updateDataInfo = array();
+            $updateDataLogin = array();
 
-                if (!empty($updateData)) 
-                    parent::__callModel('update', [$updateData, $id]);
-            } else {
+            // Danh sách các trường cần kiểm tra
+            $infoFields = array(
+                'firstname',
+                'lastname',
+                'DOB',
+                'email',
+                'phone'
+            );
+
+            $loginFields = array(
+                'username',
+                'password'
+            );
+            
+            if (isset($data['password'])) {
+                $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
+            }
+
+            foreach ($infoFields as $field) {
+                if (isset($data[$field]) && $data[$field] !== '') {
+                    $updateDataInfo[$field] = $data[$field];
+                }
+            }
+
+            foreach ($loginFields as $field) {
+                if (isset($data[$field]) && $data[$field] !== '') {
+                    $updateDataLogin[$field] = $data[$field];
+                }
+            }
+
+            if (!empty($updateDataInfo)) {
+                parent::__callModel('update', [$updateDataInfo, $id]);
+            }
+            if (!empty($updateDataLogin)) {
+                parent::__callModel('updateLoginInfo', [$updateDataLogin, $id]);
+            }
+            if (empty($updateDataInfo) && empty($updateDataLogin)) {
                 echo json_encode(['error' => 'Missing data']);
+            }
         }
-}
+        
+    }
 
 
     // Get a single Member by ID
     public function getMember($id)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-            parent::__callModel('getById', [ $id ]);
+            parent::__callModel('getById', [$id]);
         }
     }
 
@@ -75,10 +96,7 @@ class MemberController extends BaseController
     public function deleteMember($id)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
-            parent::__callModel('delete', [ $id ]);
+            parent::__callModel('delete', [$id]);
         }
     }
-
 }
-
-?>

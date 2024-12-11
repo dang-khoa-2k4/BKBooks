@@ -31,7 +31,7 @@ class BookController extends BaseController
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = json_decode(file_get_contents('php://input'), true);
             // default when add book
-            $data['book'] = 0;
+            $data['quantity'] = 0;
             if (isset($data['name'], $data['author'], $data['price'])) {
                 parent::__callModel('add', [$data]);
             } else {
@@ -50,14 +50,14 @@ class BookController extends BaseController
 
             // Danh sách các trường cần kiểm tra
             $fields = array(
-                'Name',
-                'Publisher',
-                'Author',
-                'Price',
-                'Description',
-                'Genre',
-                'Image',
-                'Quantity',
+                'name',
+                'publisher',
+                'author',
+                'price',
+                'description',
+                'genre',
+                'image',
+                'quantity',
             );
 
             foreach ($fields as $field) {

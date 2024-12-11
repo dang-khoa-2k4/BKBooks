@@ -108,6 +108,29 @@ class MemberModel extends UserModel{
     }
 
     /**
+     * Summary of updateLoginInfoMember
+     * @param mixed $data
+     * @param mixed $id
+     * @return array
+     */
+    public function updateLoginInfoMember($data, $id){
+        try{
+            $result = $this->update($data, ['id'=> $id]);
+            if($result){
+                $msg = 'Update login info successfully';
+                return [true, $msg];
+            }else{
+                $msg = 'Update login info failed';
+                return [false, $msg];
+            }
+        }
+        catch(PDOException $e){
+            $msg = 'Update login info failed';
+            return [false, $msg];
+        }
+    }
+
+    /**
      * Summary of updateInfor
      * @param mixed $id: id of member
      * @param mixed $data: data to update
@@ -121,14 +144,12 @@ class MemberModel extends UserModel{
             // Fields to be added.
             $fields = array_keys($data);
             // Fields values
-            $values = array_values($data);
-
+            $values = array_values($data);        
             $stmt = self::$pdo->prepare("
             UPDATE member SET ".  implode(', ', array_map(function($field){ return $field . ' = ? '; }, $fields)) ."
             WHERE id = ?");
             array_push($values, $id);
-            $result = $stmt->execute($values);
-
+            $result = $stmt->execute($values);       
             if(!$result){
                 $msg = 'Update infor failed';
                 return [false, $msg];

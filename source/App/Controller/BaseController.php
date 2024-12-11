@@ -4,7 +4,7 @@ class BaseController
 {
     protected $model_instance;  // Instance of the model
     protected $model;  // Model name
-    protected $no_response_method = ['add', 'update', 'delete', 'register', 'reject', 'accept', 'addStock'];
+    protected $no_response_method = ['add', 'update', 'delete', 'register', 'reject', 'accept', 'addStock', 'updateLoginInfo'];
     protected $response_method = ['getAll', 'getById', 'getAllStock', 'getStatistic'];
 
     // Constructor, khi kế thừa sẽ gọi constructor của lớp con và load model
