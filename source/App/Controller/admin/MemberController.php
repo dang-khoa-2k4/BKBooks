@@ -65,9 +65,9 @@ class MemberController extends BaseController
             if (!empty($updateDataInfo)) {
                 parent::__callModel('update', [$updateDataInfo, $id]);
             }
-            if (!empty($updateDataLogin)) {
-                parent::__callModel('updateLoginInfo', [$updateDataLogin, $id]);
-            }
+            // if (!empty($updateDataLogin)) {
+            //     parent::__callModel('updateLoginInfo', [$updateDataLogin, $id]);
+            // }
             if (empty($updateDataInfo) && empty($updateDataLogin)) {
                 echo json_encode(['error' => 'Missing data']);
             }
